@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- "Mark Favorite", should appear as action button if possible -->
+    <item
+        android:id="@+id/action_statistics"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_date" /><!-- ifRoom shows the item only if there's space in the bar
+        otherwise collapses into the overflow menu-->
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_settings"
+
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+
+</menu>
