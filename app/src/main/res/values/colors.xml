@@ -2,5 +2,7 @@
 <resources>
     <color name="colorPrimary">#191970</color>
     <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
     <color name="floatingActionButtonColor">#D81B1B</color>
 </resources>
