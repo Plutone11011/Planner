@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/task_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -37,7 +38,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:hint="mm/dd/yyyy">
+        android:hint="@string/dateformat">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/task_date"
@@ -62,7 +63,7 @@
             android:id="@+id/priority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Priority"/>
+            android:text="@string/taskpriority"/>
         <Spinner
             android:id="@+id/priority_spinner"
             android:layout_width="match_parent"
