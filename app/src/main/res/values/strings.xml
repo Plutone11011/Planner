@@ -9,6 +9,9 @@
     <string name="taskname">Name</string>
     <string name="taskdate">Date</string>
     <string name="dateformat">dd/MM/yyyy</string>
+    <string name="timeformat">hh:mm</string>
+    <string name="inputTimekey">timeKey</string>
+    <string name="inputDatekey">dateKey</string>
     <string name="taskpriority">Priority</string>
     <string name="taskclass">Type of task</string>
     <string-array name="priority_array">
@@ -22,4 +25,6 @@
         <item>Family</item>
         <!-- and more-->
     </string-array>
+    <string name="buttonDate">Set Date</string>
+    <string name="buttonTime">Set Time</string>
 </resources>
