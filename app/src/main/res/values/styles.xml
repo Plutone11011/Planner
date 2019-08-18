@@ -3,7 +3,7 @@
     <style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item> <!--do not use android:colorPrimary : older version doesn't recognize it.-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item> <!-- in base theme don't use android prefix. it is not supported -->
+        <item name="colorAccent">@color/floatingActionButtonColor</item> <!-- in base theme don't use android prefix. it is not supported -->
     </style>
 
     <!-- Base application theme. -->
