@@ -40,6 +40,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         Bundle args = getArguments();
         Editable inputField = (Editable) args.getCharSequence(getString(R.string.inputTimekey));
 
+        inputField.clear();
         inputField.append(((Integer)hourOfDay).toString() + ":" + ((Integer)minute).toString());
     }
 }

@@ -26,7 +26,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private CompactCalendarView mCompactCalendarView;
-    private static Integer tmp = 0 ;
     private static ArrayList<Event> eventArrayList = new ArrayList<>();
 
     @Override
@@ -114,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         //needs to show new task on the calendar
         super.onResume();
         Intent intent = getIntent();
-        tmp++;
 
 
 
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         Long ldate = intent.getLongExtra("date",new Date().getTime());
 
         //Toast.makeText(this,ldate.toString(),Toast.LENGTH_LONG).show();
-        Event registeredActivity = new Event(Color.BLACK,ldate,tmp.toString());
+        Event registeredActivity = new Event(Color.BLACK,ldate);
         eventArrayList.add(registeredActivity);
         mCompactCalendarView.addEvents(eventArrayList);
         //mCompactCalendarView.addEvent(registeredActivity);

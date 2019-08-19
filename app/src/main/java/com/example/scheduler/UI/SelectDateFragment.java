@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,10 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
 
         Bundle args = getArguments();
         Editable inputField = (Editable) args.getCharSequence(getString(R.string.inputDatekey));
+
+        inputField.clear();
+        Log.d("Mese",((Integer)month).toString());//month va da 0-11
+        month++;
 
         inputField.append(((Integer)day).toString() + "/" + ((Integer)month).toString() + "/" + ((Integer)year).toString());
     }
