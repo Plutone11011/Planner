@@ -1,4 +1,4 @@
-package com.example.scheduler.activities;
+package com.example.scheduler.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,31 +18,40 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    private CompactCalendarView mCompactCalendarView;
+    private static ArrayList<Event> eventArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Toolbar myToolbar ;
+        final DateFormat dateformat ;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final CompactCalendarView mCompactCalendarView = findViewById(R.id.compactcalendar_view);
-        Toolbar myToolbar = findViewById(R.id.toolbar);
+        mCompactCalendarView = findViewById(R.id.compactcalendar_view);
+        myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
         //sets the toolbar title to current month
         //mCompactCalendarView.setFirstDayOfWeek(Calendar.MONDAY);
-        final DateFormat dateformat = new SimpleDateFormat("MMM yyyy", Locale.US);
+        dateformat = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
         getSupportActionBar().setTitle(dateformat.format(mCompactCalendarView.getFirstDayOfCurrentMonth()));
         //set title on calendar scroll
+
+
+
         mCompactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
+
             }
 
             @Override
@@ -97,16 +107,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //after task activity main will always call onResume, not sure about other lifecycle methods
     @Override
     protected void onResume() {
         //needs to show new task on the calendar
         super.onResume();
         Intent intent = getIntent();
 
-        CompactCalendarView mCompactCalendarView = findViewById(R.id.compactcalendar_view);
-        long ldate = intent.getLongExtra("date",new Date().getTime());
 
+
+        mCompactCalendarView = findViewById(R.id.compactcalendar_view);
+        Long ldate = intent.getLongExtra("date",new Date().getTime());
+
+        //Toast.makeText(this,ldate.toString(),Toast.LENGTH_LONG).show();
         Event registeredActivity = new Event(Color.BLACK,ldate);
-        mCompactCalendarView.addEvent(registeredActivity);
+        eventArrayList.add(registeredActivity);
+        mCompactCalendarView.addEvents(eventArrayList);
+        //mCompactCalendarView.addEvent(registeredActivity);
+
+        List<Event> events = mCompactCalendarView.getEvents(ldate);
+        Log.d("TAG",events.toString());
     }
 }
