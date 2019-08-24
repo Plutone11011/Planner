@@ -1,0 +1,52 @@
+package com.example.scheduler.Model;
+
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+
+@Entity(tableName = "Tasks", primaryKeys = {"name", "date"})
+public class TasksTable {
+
+
+    private @NonNull String name ;
+
+    private @NonNull String date ;
+
+
+    //ongoing, completed, pending
+    private String state ;
+    //standard values are homework, training, family
+    private String type ;
+
+    //need to map human friendly priority descriptors to numbers
+    private String priority ;
+
+    public TasksTable(@NonNull String name, @NonNull String date, String state, String type, String priority) {
+        this.name = name;
+        this.date = date;
+        this.state = state;
+        this.type = type;
+        this.priority = priority;
+    }
+
+    @NonNull
+    public String getName() {
+        return name;
+    }
+
+    @NonNull
+    public String getDate() {
+        return date;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+}

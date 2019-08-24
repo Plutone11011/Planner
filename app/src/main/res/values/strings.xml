@@ -8,8 +8,8 @@
     <string name="action_back">Back</string>
     <string name="taskname">Name</string>
     <string name="taskdate">Date</string>
-    <string name="dateformat">dd/MM/yyyy</string>
-    <string name="timeformat">hh:mm</string>
+    <string name="dateformat">dd-MM-yyyy</string>
+    <string name="timeformat">HH:mm</string>
     <string name="inputTimekey">timeKey</string>
     <string name="inputDatekey">dateKey</string>
     <string name="taskpriority">Priority</string>
@@ -24,6 +24,11 @@
         <item>Training</item>
         <item>Family</item>
         <!-- and more-->
+    </string-array>
+    <string-array name="states_array">
+        <item>Pending</item>
+        <item>Ongoing</item>
+        <item>Completed</item>
     </string-array>
     <string name="buttonDate">Set Date</string>
     <string name="buttonTime">Set Time</string>

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.scheduler.Model.TasksTable;
+import com.example.scheduler.MyDateFormat;
 import com.example.scheduler.R;
-import com.example.scheduler.viewmodels.TaskActivityViewModel;
+import com.example.scheduler.Viewmodels.TaskActivityViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
@@ -34,21 +35,21 @@ public class TaskActivity extends AppCompatActivity {
     private static final Integer textviewErr = 4 ;
     private Spinner spinnerPriority, spinnerClass ;
     private TaskActivityViewModel taskVM ;
+    private TextInputEditText inputTimeText, inputDateText, inputNameText ;
 
     //returns true if the form has been completed in at least
     //the required fields
-    private boolean isTaskFormCompleted(TextInputEditText inputDateText, TextInputEditText inputNameText, TextInputEditText inputTimeText){
+    private boolean isTaskFormCompleted(){
+
         if(!TextUtils.isEmpty(inputNameText.getText()) && !TextUtils.isEmpty(inputDateText.getText()) && !TextUtils.isEmpty(inputTimeText.getText())){
 
-            try{
-                Date date = new SimpleDateFormat(getString(R.string.dateformat), Locale.US).parse(inputDateText.getText().toString());
-                taskVM.setTask_date(date);
-                //e altri set?
-            }
-            catch(ParseException | NullPointerException | IllegalArgumentException ex){
-                //maybe toast
-            }
-
+            taskVM.setTask_date(inputDateText.getText().toString() + " " + inputTimeText.getText().toString());
+            taskVM.setName(inputNameText.getText().toString());
+            taskVM.setState("Pending");
+            taskVM.setPriority(spinnerPriority.getSelectedItem().toString());
+            taskVM.setType(spinnerClass.getSelectedItem().toString());
+            taskVM.insert(new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
+                    taskVM.getType(), taskVM.getPriority()));
             return true ;
         }
         else{
@@ -68,64 +69,14 @@ public class TaskActivity extends AppCompatActivity {
 
     //auxiliary method to start dialog fragments for date and time
     private void startDialogFragment(TextInputEditText mTextInputEditText, DialogFragment dialogFragment, String tag, String key){
+        //sends editable object as bundle argument for the dialog to update the form automatically
         Bundle args = new Bundle();
         args.putCharSequence(key,mTextInputEditText.getText());
 
         dialogFragment.setArguments(args);
         dialogFragment.show(getSupportFragmentManager(), tag);
     }
-    /*
-    private void initWidgetListeners(){
 
-
-
-        dateInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-                valueChanged = true ;
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                //syntactic check, date format validity dd/MM/yyyy
-                //start + count indicates the current character changing
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!valueChanged){
-
-                }
-
-
-
-            }
-        });
-    }
-
-        spinnerPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        spinnerClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +96,16 @@ public class TaskActivity extends AppCompatActivity {
         myToolbar.setTitle("");
         myToolbar.setSubtitle("");
 
+        inputDateText = findViewById(R.id.task_date);
+        inputNameText = findViewById(R.id.task_name);
+        inputTimeText = findViewById(R.id.task_time);
+        spinnerPriority = findViewById(R.id.priority_spinner);
+        spinnerClass = findViewById(R.id.class_spinner);
+
         taskVM = ViewModelProviders.of(this).get(TaskActivityViewModel.class);
+
+        //observe livedata changes
+
         //listener for back navigation button
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +121,7 @@ public class TaskActivity extends AppCompatActivity {
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextInputEditText inputTimeText = findViewById(R.id.task_time);
+                inputTimeText = findViewById(R.id.task_time);
                 DialogFragment newFragment = new TimePickerFragment();
 
                 startDialogFragment(inputTimeText,newFragment,"time dialog",getString(R.string.inputTimekey));
@@ -172,7 +132,7 @@ public class TaskActivity extends AppCompatActivity {
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextInputEditText inputDateText = findViewById(R.id.task_date);
+                inputDateText = findViewById(R.id.task_date);
                 DialogFragment newFragment = new SelectDateFragment();
 
                 startDialogFragment(inputDateText,newFragment,"date dialog",getString(R.string.inputDatekey));
@@ -180,8 +140,7 @@ public class TaskActivity extends AppCompatActivity {
         });
 
         //spinners
-        spinnerPriority = findViewById(R.id.priority_spinner);
-        spinnerClass = findViewById(R.id.class_spinner);
+
         //create array adapter using string array and a default spinner layout
         ArrayAdapter<CharSequence> adapterPriority = ArrayAdapter.createFromResource(this,
                 R.array.priority_array, R.layout.support_simple_spinner_dropdown_item);
@@ -210,14 +169,16 @@ public class TaskActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_ok) {
             // User ok, save task and return to main activity
             //Toast.makeText(this,item.getTitle().toString(),Toast.LENGTH_SHORT).show();
-            TextInputEditText inputDateText = findViewById(R.id.task_date);
-            TextInputEditText inputNameText = findViewById(R.id.task_name);
-            TextInputEditText inputTimeText = findViewById(R.id.task_time);
 
-            if (isTaskFormCompleted(inputDateText,inputNameText, inputTimeText)) {
-
+            if (isTaskFormCompleted()) {
+                MyDateFormat dateformat = new MyDateFormat(getString(R.string.dateformat)
+                        + " " + getString(R.string.timeformat));
                 Intent returnToCalendar = new Intent(this, MainActivity.class);
-                returnToCalendar.putExtra("date", taskVM.getTask_date().getTime());
+                try {
+                    returnToCalendar.putExtra("date", dateformat.StringtoDate(taskVM.getTask_date()).getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 //probably save other things here, viewmodel
                 startActivity(returnToCalendar);
                 //need to make an Intent passing the date as a parameter

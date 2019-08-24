@@ -40,6 +40,6 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         Log.d("Mese",((Integer)month).toString());//month va da 0-11
         month++;
 
-        inputField.append(((Integer)day).toString() + "/" + ((Integer)month).toString() + "/" + ((Integer)year).toString());
+        inputField.append(((Integer)day).toString() + "-" + ((Integer)month).toString() + "-" + ((Integer)year).toString());
     }
 }
