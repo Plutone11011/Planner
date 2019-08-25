@@ -1,6 +1,7 @@
 package com.example.scheduler.Repository;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
@@ -9,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.scheduler.Model.TasksDAO;
 import com.example.scheduler.Model.TasksDatabase;
 import com.example.scheduler.Model.TasksTable;
+import com.example.scheduler.Model.datetimePOJO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,8 +53,13 @@ public class TasksRepo {
         new NukeAsyncTask(tasksDAO).execute();
     }
 
+    //helper method called in post execute actually returns the value
+    public void getTaskNamesWithSameDate(String d, TaskNamesWithSameDateListener appContext){
+        new getTaskNamesWithSameDateAsyncTask(tasksDAO, appContext).execute(d);
+
+    }
     //list of all dates to update calendar ui event indicators
-    public LiveData<List<String>> getAllDates(){
+    public LiveData<List<datetimePOJO>> getAllDates(){
         return tasksDAO.getAllDates() ;
     }
     //every method except from the ones returning live data objects need to
@@ -121,4 +128,31 @@ public class TasksRepo {
             return null;
         }
     }
+
+    private static class getTaskNamesWithSameDateAsyncTask extends AsyncTask<String, Void, List<String>>{
+
+        private TasksDAO tasksDAO ;
+        private TaskNamesWithSameDateListener listener;//callback that allows main thread to listen to this asynctask results
+
+        private getTaskNamesWithSameDateAsyncTask(TasksDAO tasksDAO, TaskNamesWithSameDateListener listener) {
+            this.tasksDAO = tasksDAO;
+            this.listener = listener ;
+        }
+
+        @Override
+        protected List<String> doInBackground(String... strings) {
+            return tasksDAO.getTaskNamesWithSameDate(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<String> strings) {
+            listener.onTaskResult(strings);
+        }
+    }
+
+    //interface that main activity implements to listen to results
+    public interface TaskNamesWithSameDateListener{
+        void onTaskResult(List<String> tasksWithSameDate);
+    }
+
 }

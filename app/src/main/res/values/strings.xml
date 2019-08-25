@@ -32,4 +32,8 @@
     </string-array>
     <string name="buttonDate">Set Date</string>
     <string name="buttonTime">Set Time</string>
+    <string name="editAction">Edit</string>
+    <string name="deleteAction">Delete</string>
+    <string name="name_list_dialog">listTaskKey</string>
+    <string name="isDelete">is_delete</string>
 </resources>

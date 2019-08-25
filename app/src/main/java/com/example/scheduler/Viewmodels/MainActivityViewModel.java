@@ -7,10 +7,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.scheduler.Model.TasksTable;
+import com.example.scheduler.Model.datetimePOJO;
 import com.example.scheduler.Repository.TasksRepo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
 
 
-    private LiveData<List<String>> dates ;
+    private LiveData<List<datetimePOJO>> dates ;
     private TasksRepo tasksRepo ;
 
     public MainActivityViewModel(@NonNull Application application) {
@@ -28,7 +30,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         dates = tasksRepo.getAllDates();
     }
 
-    public LiveData<List<String>> getDates() {
+    public LiveData<List<datetimePOJO>> getDates() {
         return dates;
     }
 

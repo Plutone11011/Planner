@@ -19,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.scheduler.Model.TasksTable;
-import com.example.scheduler.MyDateFormat;
 import com.example.scheduler.R;
 import com.example.scheduler.Viewmodels.TaskActivityViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,41 +36,14 @@ public class TaskActivity extends AppCompatActivity {
     private TaskActivityViewModel taskVM ;
     private TextInputEditText inputTimeText, inputDateText, inputNameText ;
 
-    //returns true if the form has been completed in at least
-    //the required fields
-    private boolean isTaskFormCompleted(){
 
-        if(!TextUtils.isEmpty(inputNameText.getText()) && !TextUtils.isEmpty(inputDateText.getText()) && !TextUtils.isEmpty(inputTimeText.getText())){
-
-            taskVM.setTask_date(inputDateText.getText().toString() + " " + inputTimeText.getText().toString());
-            taskVM.setName(inputNameText.getText().toString());
-            taskVM.setState("Pending");
-            taskVM.setPriority(spinnerPriority.getSelectedItem().toString());
-            taskVM.setType(spinnerClass.getSelectedItem().toString());
-            taskVM.insert(new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
-                    taskVM.getType(), taskVM.getPriority()));
-            return true ;
-        }
-        else{
-            //the user didn't insert a one of the required fields
-            LinearLayout linearLayout = findViewById(R.id.task_layout);
-
-            TextView errorMessage = new TextView(getApplicationContext());
-            errorMessage.setText("Not a valid date, time, or name");
-            errorMessage.setId(textviewErr);
-            errorMessage.setTextColor(getColor(R.color.floatingActionButtonColor));
-            errorMessage.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            linearLayout.addView(errorMessage);
-            return false ;
-        }
-    }
 
     //auxiliary method to start dialog fragments for date and time
     private void startDialogFragment(TextInputEditText mTextInputEditText, DialogFragment dialogFragment, String tag, String key){
         //sends editable object as bundle argument for the dialog to update the form automatically
         Bundle args = new Bundle();
         args.putCharSequence(key,mTextInputEditText.getText());
+
 
         dialogFragment.setArguments(args);
         dialogFragment.show(getSupportFragmentManager(), tag);
@@ -170,24 +142,33 @@ public class TaskActivity extends AppCompatActivity {
             // User ok, save task and return to main activity
             //Toast.makeText(this,item.getTitle().toString(),Toast.LENGTH_SHORT).show();
 
-            if (isTaskFormCompleted()) {
-                MyDateFormat dateformat = new MyDateFormat(getString(R.string.dateformat)
-                        + " " + getString(R.string.timeformat));
-                Intent returnToCalendar = new Intent(this, MainActivity.class);
-                try {
-                    returnToCalendar.putExtra("date", dateformat.StringtoDate(taskVM.getTask_date()).getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                //probably save other things here, viewmodel
-                startActivity(returnToCalendar);
-                //need to make an Intent passing the date as a parameter
+            //if all 3 of the required fields are filled
+            //can set the view model and the db, and return to the main calendar activity
+            if(!TextUtils.isEmpty(inputNameText.getText()) && !TextUtils.isEmpty(inputDateText.getText()) && !TextUtils.isEmpty(inputTimeText.getText())){
 
-                //Event registeredActivity = new Event(Color.BLACK,);
-                //mCompacCalendarView.addEvent(registeredActivity);
-
+                taskVM.setTask_date(inputDateText.getText().toString() + " " + inputTimeText.getText().toString());
+                taskVM.setName(inputNameText.getText().toString());
+                taskVM.setState("Pending");
+                taskVM.setPriority(spinnerPriority.getSelectedItem().toString());
+                taskVM.setType(spinnerClass.getSelectedItem().toString());
+                taskVM.insert(new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
+                        taskVM.getType(), taskVM.getPriority()));
+                startActivity(new Intent(TaskActivity.this,MainActivity.class));
+                return true ;
             }
-            return true;
+            else{
+                //the user didn't insert a one of the required fields
+                LinearLayout linearLayout = findViewById(R.id.task_layout);
+
+                TextView errorMessage = new TextView(getApplicationContext());
+                errorMessage.setText("Not a valid date, time, or name");
+                errorMessage.setId(textviewErr);
+                errorMessage.setTextColor(getColor(R.color.floatingActionButtonColor));
+                errorMessage.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                linearLayout.addView(errorMessage);
+                return false ;
+            }
         }
         else {
             // If we got here, the user's action was not recognized.

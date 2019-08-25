@@ -33,8 +33,8 @@ public interface TasksDAO {
     List<TasksTable> getTasksOfType(String tp);
 
     //query that returns a list of all the dates of the tasks
-    @Query("SELECT date FROM Tasks")
-    LiveData<List<String>> getAllDates();
+    @Query("SELECT date, name FROM Tasks")
+    LiveData<List<datetimePOJO>> getAllDates();
 
     @Query("SELECT name FROM Tasks WHERE date = :d")
     List<String> getTaskNamesWithSameDate(String d);
