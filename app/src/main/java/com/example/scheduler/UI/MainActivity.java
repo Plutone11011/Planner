@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
 
     //add event to the calendar view
     private void addEvent(long ldate, String name){
-        Event registeredActivity = new Event(Color.BLACK,ldate);
+        Event registeredActivity = new Event(Color.BLACK,ldate,name);
         eventArrayList.add(registeredActivity);
         mCompactCalendarView.addEvent(registeredActivity);
         List<Event> events = mCompactCalendarView.getEvents(ldate);
@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity{
                         public boolean onMenuItemClick(MenuItem item) {
 
                             DialogFragment dialogFragment = new SelectTaskFragment();
+                            dialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE,0);
 
                             switch(item.getItemId()){
                                 case R.id.popup_delete:
