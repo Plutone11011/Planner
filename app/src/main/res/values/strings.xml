@@ -35,5 +35,6 @@
     <string name="editAction">Edit</string>
     <string name="deleteAction">Delete</string>
     <string name="name_list_dialog">listTaskKey</string>
+    <string name="date_list_dialog">datesTaskKey</string>
     <string name="isDelete">is_delete</string>
 </resources>

@@ -40,20 +40,25 @@ public class MainActivity extends AppCompatActivity{
     private CompactCalendarView mCompactCalendarView;
     private ArrayList<Event> eventArrayList ;
     private MainActivityViewModel mainVM ;
+    private SimpleDateFormat dateformat ;
 
     //add event to the calendar view
     private void addEvent(long ldate, String name){
         Event registeredActivity = new Event(Color.BLACK,ldate,name);
         eventArrayList.add(registeredActivity);
         mCompactCalendarView.addEvent(registeredActivity);
-        List<Event> events = mCompactCalendarView.getEvents(ldate);
-        Log.d("TAG",eventArrayList.toString());
     }
 
-    private void startDialogFragment(ArrayList<String> listOfCurrentTasks, DialogFragment dialogFragment, String tag, Boolean isDelete){
+    private void removeEvent(Event e){
+        eventArrayList.remove(e);
+        mCompactCalendarView.removeEvent(e);
+    }
+
+    private void startDialogFragment(String[] listOfCurrentTasks, String[] dateOfCurrentTasks, DialogFragment dialogFragment, String tag, Boolean isDelete){
         Bundle args = new Bundle();
 
-        args.putStringArrayList(getString(R.string.name_list_dialog), listOfCurrentTasks);
+        args.putStringArray(getString(R.string.name_list_dialog), listOfCurrentTasks);
+        args.putStringArray(getString(R.string.date_list_dialog),dateOfCurrentTasks);
         args.putBoolean(getString(R.string.isDelete),isDelete);
 
         dialogFragment.setArguments(args);
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity{
         Toolbar myToolbar ;
 
         eventArrayList = new ArrayList<>();
+        dateformat = new SimpleDateFormat(getString(R.string.dateformat)
+                + " " + getString(R.string.timeformat));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -75,8 +82,6 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-        final SimpleDateFormat dateformat = new SimpleDateFormat(getString(R.string.dateformat)
-                + " " + getString(R.string.timeformat));
         mainVM = ViewModelProviders.of(this).get(MainActivityViewModel.class);
 
         //mainVM.nukeTable();
@@ -84,25 +89,51 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onChanged(List<datetimePOJO> datetimePOJOS) {
                 boolean eventIsAlreadyPresent  ;
-                //Log.d("STR",datetimePOJOS.toString());
+                Date currentDate ;
 
-                for (datetimePOJO datetime : datetimePOJOS){
-                    Date currentDate ;
-                    try{
-                        currentDate = dateformat.parse(datetime.Date);
-                    }
-                    catch(ParseException p){
-                        currentDate = new Date();
-                        p.printStackTrace();
-                    }
-                    eventIsAlreadyPresent = false ;
+                if (eventArrayList.size()  > datetimePOJOS.size()){
+                    //it means that some task has been deleted
                     for (Event e : eventArrayList){
-                        if (e.getTimeInMillis() == currentDate.getTime()){
-                            eventIsAlreadyPresent = true ;
+                        eventIsAlreadyPresent = false ;
+
+                        for (datetimePOJO datetime : datetimePOJOS){
+
+                            try{
+                                currentDate = dateformat.parse(datetime.Date);
+
+                            }
+                            catch(ParseException p){
+                                currentDate = new Date();
+                                p.printStackTrace();
+                            }
+                            if (currentDate.getTime() == e.getTimeInMillis()){
+                                eventIsAlreadyPresent = true ;
+                            }
+                        }
+                        if (!eventIsAlreadyPresent){
+                            removeEvent(e);
                         }
                     }
-                    if (!eventIsAlreadyPresent){
-                        addEvent(currentDate.getTime(),datetime.Name);
+                }
+                else {
+                    for (datetimePOJO datetime : datetimePOJOS){
+
+                        try{
+                            currentDate = dateformat.parse(datetime.Date);
+                        }
+                        catch(ParseException p){
+                            currentDate = new Date();
+                            p.printStackTrace();
+                        }
+                        eventIsAlreadyPresent = false ;
+                        for (Event e : eventArrayList){
+                            if (e.getTimeInMillis() == currentDate.getTime()){
+                                eventIsAlreadyPresent = true ;
+                            }
+                        }
+                        if (!eventIsAlreadyPresent){
+                            addEvent(currentDate.getTime(),datetime.Name);
+                        }
                     }
                 }
             }
@@ -120,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
 
         mCompactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
-            public void onDayClick(Date dateClicked) {
+            public void onDayClick(final Date dateClicked) {
 
 
                 //Log.d("CLICK", dateClicked.toString());
@@ -131,8 +162,7 @@ public class MainActivity extends AppCompatActivity{
                 for (Event ev : eventArrayList){
                     Date dateEv = new Date(ev.getTimeInMillis());
                     cal.setTime(dateEv);
-                    //for some reason compact calendar view doesn't store hh:mm:ss
-                    //so it defaults to 00:00:00
+                    //just need to compare dd MM yyyy
                     cal.set(Calendar.HOUR_OF_DAY,0);
                     cal.set(Calendar.MINUTE,0);
                     cal.set(Calendar.SECOND,0);
@@ -148,10 +178,16 @@ public class MainActivity extends AppCompatActivity{
                     popup.inflate(R.menu.popup_menu);
 
 
-                    final List<String> listOfCurrentTasks = new ArrayList<>();
                     List<Event> list = mCompactCalendarView.getEvents(dateClicked);
+                    final String[] listOfCurrentTasks = new String[list.size()];
+                    //tasks have same day month and year but not hh:mm:ss
+                    final String[] datesOfCurrentTasks = new String[list.size()];
+                    int i = 0 ;
                     for (Event ev : list){
-                        listOfCurrentTasks.add((String) ev.getData());
+                        listOfCurrentTasks[i] = (String) ev.getData();
+                        datesOfCurrentTasks[i] = dateformat.format(new Date(ev.getTimeInMillis()));
+                        Log.d("TAG",datesOfCurrentTasks[i]);
+                        i++ ;
                     }
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -163,11 +199,11 @@ public class MainActivity extends AppCompatActivity{
                             switch(item.getItemId()){
                                 case R.id.popup_delete:
                                     //need to ask which one I guess?
-                                    startDialogFragment((ArrayList<String>)listOfCurrentTasks,dialogFragment,"delete",true);
+                                    startDialogFragment(listOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"delete",true);
 
                                     break ;
                                 case R.id.popup_edit:
-                                    startDialogFragment((ArrayList<String>)listOfCurrentTasks,dialogFragment,"edit",false);
+                                    startDialogFragment(listOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"edit",false);
 
                                     break ;
 

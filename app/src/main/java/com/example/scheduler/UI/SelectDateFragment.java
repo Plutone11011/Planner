@@ -33,6 +33,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
+        String first10days = "0";
         Bundle args = getArguments();
         Editable inputField = (Editable) args.getCharSequence(getString(R.string.inputDatekey));
 
@@ -40,6 +41,16 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         Log.d("Mese",((Integer)month).toString());//month va da 0-11
         month++;
 
-        inputField.append(((Integer)day).toString() + "-" + ((Integer)month).toString() + "-" + ((Integer)year).toString());
+        if (day >= 10){
+            first10days = "";
+        }
+
+        if (month < 10){
+            inputField.append(first10days + ((Integer)day).toString() + "-0" + ((Integer)month).toString() + "-" + ((Integer)year).toString());
+        }
+        else {
+            inputField.append(first10days + ((Integer)day).toString() + "-" + ((Integer)month).toString() + "-" + ((Integer)year).toString());
+        }
+
     }
 }

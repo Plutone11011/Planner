@@ -50,23 +50,12 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void useAppContext() {
-        TasksTable t = new TasksTable("bedroom","25-09-2019 9:30","Pending" ,"Home","Urgent");
-        taskdao.insert(t);
+        taskdao.insert(new TasksTable("prova","22-04-1997 08:56", "Pending","Homework","Important"));
+        taskdao.insert(new TasksTable("prova2","22-04-1997 09:40", "Pending","Homework","Urgent"));
         //assertEquals("Get",t.getDate(),taskdao.getTasksWithPriority("Urgent").get(0).getDate());
 
-        SimpleDateFormat sm = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        Date d ;
-        try{
-            d = sm.parse(t.getDate());
-        }
-        catch (ParseException p){
-            return;
-
-        }
-
-        String expected = taskdao.getTasksOfType("Home").get(0).getDate();
-        String actual = sm.format(d);
-        //assertEquals("Parsing",expected,actual);
-
+        TasksTable t = taskdao.getTaskWithPrimaryKey("22-04-1997 08:56","prova");
+        taskdao.deleteTaskWithPrimaryKey("22-04-1997 08:56","prova");
+        t = taskdao.getTaskWithPrimaryKey("22-04-1997 08:56","prova");
     }
 }

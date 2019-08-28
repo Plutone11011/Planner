@@ -3,6 +3,7 @@ package com.example.scheduler.Repository;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -49,6 +50,10 @@ public class TasksRepo {
         new DeleteTasksAsyncTask(tasksDAO).execute(tasksTable);
     }
 
+    public void deleteTaskWithPrimaryKey(String date, String name){
+        new DeleteTaskWithPrimaryKeyAsyncTask(tasksDAO,name,date).execute();
+    }
+    //deletes every row
     public void nukeTable(){
         new NukeAsyncTask(tasksDAO).execute();
     }
@@ -58,13 +63,18 @@ public class TasksRepo {
         new getTaskNamesWithSameDateAsyncTask(tasksDAO, appContext).execute(d);
 
     }
+
+    public void getTaskWithPrimaryKey(String date, String name, TaskWithPrimaryKey listener){
+        new getTaskWithPrimaryKeyAsyncTask(tasksDAO,name,date,listener).execute();
+    }
     //list of all dates to update calendar ui event indicators
     public LiveData<List<datetimePOJO>> getAllDates(){
         return tasksDAO.getAllDates() ;
     }
-    //every method except from the ones returning live data objects need to
-    //be executed in the bg, asynctask, there's an asynctask for each method
 
+    /**** From here on, asynctask classes****/
+    //every method except from the ones returning live data objects need to
+    //be executed in the bg, so there's an asynctask for each method
     //need to be static in order to avoid having references to repo and causing memory leaks
     //then there needs to be a dao field for the db operations and a constructor to initialize it
     private static class InsertTasksAsyncTask extends AsyncTask<TasksTable, Void, Void>{
@@ -114,6 +124,24 @@ public class TasksRepo {
         }
     }
 
+    private static class DeleteTaskWithPrimaryKeyAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        private TasksDAO tasksDAO ;
+        private String name, date ;
+
+        public DeleteTaskWithPrimaryKeyAsyncTask(TasksDAO tasksDAO, String name, String date) {
+            this.name = name;
+            this.date = date;
+            this.tasksDAO = tasksDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            tasksDAO.deleteTaskWithPrimaryKey(date,name);
+            return null;
+        }
+    }
+
     private static class NukeAsyncTask extends AsyncTask<Void, Void, Void>{
 
         private TasksDAO taskDAO ;
@@ -127,6 +155,39 @@ public class TasksRepo {
             taskDAO.nukeTable();
             return null;
         }
+    }
+
+    //calls a callback function to return results to the UI thread
+    //the calling component needs to implement the interface
+
+    private static class getTaskWithPrimaryKeyAsyncTask extends AsyncTask<Void,Void,TasksTable>{
+
+        private TasksDAO tasksDAO ;
+        private String name, date ;
+        private TaskWithPrimaryKey listener ;
+
+        public getTaskWithPrimaryKeyAsyncTask(TasksDAO tasksDAO, String name, String date, TaskWithPrimaryKey taskWithPrimaryKey) {
+            this.tasksDAO = tasksDAO;
+            this.name = name;
+            this.date = date;
+            this.listener = taskWithPrimaryKey;
+        }
+
+        @Override
+        protected TasksTable doInBackground(Void... voids) {
+            return tasksDAO.getTaskWithPrimaryKey(date,name);
+        }
+
+        @Override
+        protected void onPostExecute(TasksTable tasksTable) {
+            Log.d("TAG",tasksTable.getDate());
+            Log.d("TAG",tasksTable.getName());
+            Log.d("TAG",tasksTable.getPriority());
+            listener.onTaskResult(tasksTable);
+        }
+    }
+    public interface TaskWithPrimaryKey{
+        void onTaskResult(TasksTable tasksTable);
     }
 
     private static class getTaskNamesWithSameDateAsyncTask extends AsyncTask<String, Void, List<String>>{
@@ -154,5 +215,7 @@ public class TasksRepo {
     public interface TaskNamesWithSameDateListener{
         void onTaskResult(List<String> tasksWithSameDate);
     }
+
+
 
 }

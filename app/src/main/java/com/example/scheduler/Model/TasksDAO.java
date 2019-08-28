@@ -38,4 +38,11 @@ public interface TasksDAO {
 
     @Query("SELECT name FROM Tasks WHERE date = :d")
     List<String> getTaskNamesWithSameDate(String d);
+
+    //returns the only tuple with a specific name and date
+    @Query("SELECT * FROM Tasks WHERE date = :d and name = :n")
+    TasksTable getTaskWithPrimaryKey(String d, String n);
+
+    @Query("DELETE FROM Tasks WHERE date = :d and name = :n")
+    void deleteTaskWithPrimaryKey(String d, String n);
 }

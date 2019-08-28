@@ -185,6 +185,17 @@ public class TaskActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        Intent intent = getIntent();
+
+        if (intent.getCharSequenceExtra("name") != null){
+            inputNameText.getText().append(intent.getCharSequenceExtra("name"));
+        }
 
 
+    }
 }
