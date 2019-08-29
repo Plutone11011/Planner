@@ -33,6 +33,7 @@ public class SelectTaskFragment extends DialogFragment implements TasksRepo.Task
     public void onTaskResult(TasksTable tasksTable) {
         Intent intent = new Intent(getContext(),TaskActivity.class);
 
+        intent.putExtra("id",tasksTable.getId());
         intent.putExtra("name",tasksTable.getName());
         intent.putExtra("date",tasksTable.getDate());
         intent.putExtra("priority",tasksTable.getPriority());
@@ -76,8 +77,8 @@ public class SelectTaskFragment extends DialogFragment implements TasksRepo.Task
                 //sets date knowing that every dates and names of the same event are stored at the same position
                 selectDateFragmentVM.setT_date(datesOfCurrentTasks[Arrays.asList(listOfCurrentTasks).indexOf(selectDateFragmentVM.getT_name())]);
 
-                Log.d("TAG",selectDateFragmentVM.getT_name());
-                Log.d("TAG",selectDateFragmentVM.getT_date());
+                Log.d("SelectTaskFragment",selectDateFragmentVM.getT_name());
+                Log.d("SelectTaskFragment",selectDateFragmentVM.getT_date());
                 if (selectDateFragmentVM.getDelete()){
                     //delete tasktable
                     selectDateFragmentVM.deleteTaskWithPrimaryKey(selectDateFragmentVM.getT_date(),selectDateFragmentVM.getT_name());

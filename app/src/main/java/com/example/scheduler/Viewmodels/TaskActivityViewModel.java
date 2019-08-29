@@ -28,6 +28,25 @@ public class TaskActivityViewModel extends AndroidViewModel {
     //private MutableLiveData<String> nameTask ;
     private String task_date ;//contains whole date dd/MM/yyyy hh:mm
     private String priority, type, name, state ;
+    private Integer id ;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    private Boolean intentForUpdate ;
+
+    public Boolean getIntentForUpdate() {
+        return intentForUpdate;
+    }
+
+    public void setIntentForUpdate(Boolean intentForUpdate) {
+        this.intentForUpdate = intentForUpdate;
+    }
 
     public String getPriority() {
         return priority;

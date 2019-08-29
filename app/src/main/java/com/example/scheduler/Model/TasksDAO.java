@@ -45,4 +45,6 @@ public interface TasksDAO {
 
     @Query("DELETE FROM Tasks WHERE date = :d and name = :n")
     void deleteTaskWithPrimaryKey(String d, String n);
+
 }
+

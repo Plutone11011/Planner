@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = TasksTable.class, version = 1)
+@Database(entities = TasksTable.class, version = 2)
 public abstract class TasksDatabase extends RoomDatabase {
 
     private static TasksDatabase instance;//singleton

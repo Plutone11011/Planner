@@ -85,12 +85,39 @@ public class MainActivity extends AppCompatActivity{
         mainVM = ViewModelProviders.of(this).get(MainActivityViewModel.class);
 
         //mainVM.nukeTable();
+        //doesn't observe for the entire table because it isn't interested
+        //priority, type, state will be queried from the db afterwards starting from the POJO
         mainVM.getDates().observe(this, new Observer<List<datetimePOJO>>() {
             @Override
             public void onChanged(List<datetimePOJO> datetimePOJOS) {
-                boolean eventIsAlreadyPresent  ;
+
                 Date currentDate ;
 
+                //empties calendar view and array of events
+                //then updates it with the data from the system
+                mCompactCalendarView.removeAllEvents();
+                eventArrayList.clear();
+                for (datetimePOJO datetime : datetimePOJOS){
+                    Log.d("MainActivity",datetime.Name);
+                    Log.d("MainActivity",datetime.Date);
+                    try{
+                        currentDate = dateformat.parse(datetime.Date);
+                    }
+                    catch(ParseException p){
+                        currentDate = new Date();
+                        p.printStackTrace();
+                    }
+                    addEvent(currentDate.getTime(),datetime.Name);
+                }
+                for (Event e : eventArrayList){
+                    Log.d("MainActivity",e.getData().toString());
+                    Log.d("MainActivity",dateformat.format(new Date(e.getTimeInMillis())));
+                }
+
+                /*
+                Log.d("MainActivity",((Integer)datetimePOJOS.size()).toString());
+                Log.d("MainActivity",((Integer)eventArrayList.size()).toString());
+                //DELETE
                 if (eventArrayList.size()  > datetimePOJOS.size()){
                     //it means that some task has been deleted
                     for (Event e : eventArrayList){
@@ -115,7 +142,8 @@ public class MainActivity extends AppCompatActivity{
                         }
                     }
                 }
-                else {
+                //INSERT
+                else if (eventArrayList.size()  < datetimePOJOS.size()){
                     for (datetimePOJO datetime : datetimePOJOS){
 
                         try{
@@ -136,6 +164,10 @@ public class MainActivity extends AppCompatActivity{
                         }
                     }
                 }
+                //UPDATE, the size of the db records and the event list is the same
+                else {
+                    Log.d("MainActivity","passo di qua");
+                }*/
             }
         });
 
@@ -186,7 +218,7 @@ public class MainActivity extends AppCompatActivity{
                     for (Event ev : list){
                         listOfCurrentTasks[i] = (String) ev.getData();
                         datesOfCurrentTasks[i] = dateformat.format(new Date(ev.getTimeInMillis()));
-                        Log.d("TAG",datesOfCurrentTasks[i]);
+                        Log.d("MainActivity",datesOfCurrentTasks[i]);
                         i++ ;
                     }
 
