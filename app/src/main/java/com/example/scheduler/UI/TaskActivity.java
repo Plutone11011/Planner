@@ -117,9 +117,7 @@ public class TaskActivity extends AppCompatActivity {
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(),"Mah",Toast.LENGTH_SHORT).show();
-                //maybe cache content?
-                //return to calendar activity
+                startActivity(new Intent(TaskActivity.this,MainActivity.class));
             }
         });
 

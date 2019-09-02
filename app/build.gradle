@@ -27,6 +27,7 @@ android {
 dependencies {
     def room_version = "2.2.0-alpha02"
     implementation "androidx.room:room-runtime:$room_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -40,4 +41,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.github.SundeepK:CompactCalendarView:e74e0eeb913744bdcaea6e9df53268441f9dbf8d'
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    //implementation 'com.google.android.material:material-rc01:27.1.0'
 }

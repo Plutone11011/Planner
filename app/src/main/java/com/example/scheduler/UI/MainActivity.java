@@ -114,60 +114,7 @@ public class MainActivity extends AppCompatActivity{
                     Log.d("MainActivity",dateformat.format(new Date(e.getTimeInMillis())));
                 }
 
-                /*
-                Log.d("MainActivity",((Integer)datetimePOJOS.size()).toString());
-                Log.d("MainActivity",((Integer)eventArrayList.size()).toString());
-                //DELETE
-                if (eventArrayList.size()  > datetimePOJOS.size()){
-                    //it means that some task has been deleted
-                    for (Event e : eventArrayList){
-                        eventIsAlreadyPresent = false ;
 
-                        for (datetimePOJO datetime : datetimePOJOS){
-
-                            try{
-                                currentDate = dateformat.parse(datetime.Date);
-
-                            }
-                            catch(ParseException p){
-                                currentDate = new Date();
-                                p.printStackTrace();
-                            }
-                            if (currentDate.getTime() == e.getTimeInMillis()){
-                                eventIsAlreadyPresent = true ;
-                            }
-                        }
-                        if (!eventIsAlreadyPresent){
-                            removeEvent(e);
-                        }
-                    }
-                }
-                //INSERT
-                else if (eventArrayList.size()  < datetimePOJOS.size()){
-                    for (datetimePOJO datetime : datetimePOJOS){
-
-                        try{
-                            currentDate = dateformat.parse(datetime.Date);
-                        }
-                        catch(ParseException p){
-                            currentDate = new Date();
-                            p.printStackTrace();
-                        }
-                        eventIsAlreadyPresent = false ;
-                        for (Event e : eventArrayList){
-                            if (e.getTimeInMillis() == currentDate.getTime()){
-                                eventIsAlreadyPresent = true ;
-                            }
-                        }
-                        if (!eventIsAlreadyPresent){
-                            addEvent(currentDate.getTime(),datetime.Name);
-                        }
-                    }
-                }
-                //UPDATE, the size of the db records and the event list is the same
-                else {
-                    Log.d("MainActivity","passo di qua");
-                }*/
             }
         });
 
@@ -284,11 +231,16 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_list:
+                startActivity(new Intent(MainActivity.this, ListTaskActivity.class));
+                return true ;
+
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
 
             case R.id.action_statistics:
+                startActivity(new Intent(MainActivity.this, UsageGraphActivity.class));
                 // User chose the statistics action, show usage graphs
                 return true;
 

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.R;
 import com.example.scheduler.Repository.TasksRepo;
-import com.example.scheduler.TasksAdapter;
+import com.example.scheduler.Adapters.TasksAdapter;
 import com.example.scheduler.Viewmodels.SelectTaskFragmentViewModel;
 
 import java.util.Arrays;

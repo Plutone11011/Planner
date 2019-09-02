@@ -32,9 +32,21 @@ public interface TasksDAO {
     @Query("SELECT * FROM Tasks WHERE type = :tp")
     List<TasksTable> getTasksOfType(String tp);
 
-    //query that returns a list of all the dates of the tasks
+    //query that returns a list of all the dates and names of the tasks
     @Query("SELECT date, name FROM Tasks")
     LiveData<List<datetimePOJO>> getAllDates();
+
+    //query that returns a list of all the priorities and names of the tasks
+    @Query("SELECT name, priority FROM Tasks")
+    LiveData<List<namePrioPOJO>> getAllPriorities();
+
+    //query that returns a list of all the states and names of the tasks
+    @Query("SELECT name, state FROM Tasks")
+    LiveData<List<nameStatePOJO>> getAllStates();
+
+    //query that returns a list of all the types and names of the tasks
+    @Query("SELECT name, type FROM Tasks")
+    LiveData<List<nameClassPOJO>> getAllTypes();
 
     @Query("SELECT name FROM Tasks WHERE date = :d")
     List<String> getTaskNamesWithSameDate(String d);
@@ -45,6 +57,7 @@ public interface TasksDAO {
 
     @Query("DELETE FROM Tasks WHERE date = :d and name = :n")
     void deleteTaskWithPrimaryKey(String d, String n);
+
 
 }
 

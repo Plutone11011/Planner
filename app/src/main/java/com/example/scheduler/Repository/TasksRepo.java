@@ -12,6 +12,9 @@ import com.example.scheduler.Model.TasksDAO;
 import com.example.scheduler.Model.TasksDatabase;
 import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.Model.datetimePOJO;
+import com.example.scheduler.Model.nameClassPOJO;
+import com.example.scheduler.Model.namePrioPOJO;
+import com.example.scheduler.Model.nameStatePOJO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,11 +70,13 @@ public class TasksRepo {
     public void getTaskWithPrimaryKey(String date, String name, TaskWithPrimaryKey listener){
         new getTaskWithPrimaryKeyAsyncTask(tasksDAO,name,date,listener).execute();
     }
-    //list of all dates to update calendar ui event indicators
+    //livedata methods
     public LiveData<List<datetimePOJO>> getAllDates(){
         return tasksDAO.getAllDates() ;
     }
-
+    public LiveData<List<namePrioPOJO>> getAllPriorities(){ return tasksDAO.getAllPriorities();}
+    public LiveData<List<nameStatePOJO>> getAllStates(){ return tasksDAO.getAllStates();}
+    public LiveData<List<nameClassPOJO>> getAllTypes(){ return tasksDAO.getAllTypes();}
     /**** From here on, asynctask classes****/
     //every method except from the ones returning live data objects need to
     //be executed in the bg, so there's an asynctask for each method
