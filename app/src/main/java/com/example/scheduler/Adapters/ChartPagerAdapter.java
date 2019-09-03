@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.scheduler.UI.TabHistogram;
+import com.example.scheduler.UI.TabLineChart;
 import com.example.scheduler.UI.TabPie;
 
 public class ChartPagerAdapter extends FragmentPagerAdapter {
@@ -22,6 +23,8 @@ public class ChartPagerAdapter extends FragmentPagerAdapter {
                 return new TabPie();
             case 1:
                 return new TabHistogram();
+            case 2:
+                return new TabLineChart();
             default:
                 return null;
         }
@@ -30,7 +33,7 @@ public class ChartPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
 
-        return 2;
+        return 3;
     }
 
     /*@Override

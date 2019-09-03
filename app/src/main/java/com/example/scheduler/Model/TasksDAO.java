@@ -58,6 +58,8 @@ public interface TasksDAO {
     @Query("DELETE FROM Tasks WHERE date = :d and name = :n")
     void deleteTaskWithPrimaryKey(String d, String n);
 
+    @Query("SELECT date, state FROM Tasks")
+    LiveData<List<DateStatePOJO>> getDataForLineChart();
 
 }
 

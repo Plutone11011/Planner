@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.scheduler.Model.DateStatePOJO;
 import com.example.scheduler.Model.TasksDAO;
 import com.example.scheduler.Model.TasksDatabase;
 import com.example.scheduler.Model.TasksTable;
@@ -77,6 +78,7 @@ public class TasksRepo {
     public LiveData<List<namePrioPOJO>> getAllPriorities(){ return tasksDAO.getAllPriorities();}
     public LiveData<List<nameStatePOJO>> getAllStates(){ return tasksDAO.getAllStates();}
     public LiveData<List<nameClassPOJO>> getAllTypes(){ return tasksDAO.getAllTypes();}
+    public LiveData<List<DateStatePOJO>> getDataForLineChart(){ return tasksDAO.getDataForLineChart();}
     /**** From here on, asynctask classes****/
     //every method except from the ones returning live data objects need to
     //be executed in the bg, so there's an asynctask for each method

@@ -42,5 +42,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.github.SundeepK:CompactCalendarView:e74e0eeb913744bdcaea6e9df53268441f9dbf8d'
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     //implementation 'com.google.android.material:material-rc01:27.1.0'
 }
