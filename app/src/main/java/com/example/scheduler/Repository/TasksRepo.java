@@ -79,6 +79,10 @@ public class TasksRepo {
     public LiveData<List<nameStatePOJO>> getAllStates(){ return tasksDAO.getAllStates();}
     public LiveData<List<nameClassPOJO>> getAllTypes(){ return tasksDAO.getAllTypes();}
     public LiveData<List<DateStatePOJO>> getDataForLineChart(){ return tasksDAO.getDataForLineChart();}
+
+    public void updateStatetoOngoing(String state, Integer id){
+        new updateStatetoOngoingAsyncTask(tasksDAO,id);
+    }
     /**** From here on, asynctask classes****/
     //every method except from the ones returning live data objects need to
     //be executed in the bg, so there's an asynctask for each method
@@ -115,6 +119,23 @@ public class TasksRepo {
         }
     }
 
+    private static class updateStatetoOngoingAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        private TasksDAO tasksDAO ;
+        private Integer id ;
+
+        public updateStatetoOngoingAsyncTask(TasksDAO tasksDAO, Integer id) {
+            this.tasksDAO = tasksDAO;
+            this.id = id;
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            tasksDAO.updateStatetoOngoing(id);
+            return null;
+        }
+    }
 
     private static class DeleteTasksAsyncTask extends AsyncTask<TasksTable, Void, Void>{
 

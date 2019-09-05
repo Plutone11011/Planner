@@ -9,7 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".UI.UsageGraphActivity"></activity>
+        <service
+            android:name=".OngoingService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".UI.UsageGraphActivity" />
         <activity android:name=".UI.ListTaskActivity" />
         <activity android:name=".UI.TaskActivity" />
         <activity android:name=".UI.MainActivity">

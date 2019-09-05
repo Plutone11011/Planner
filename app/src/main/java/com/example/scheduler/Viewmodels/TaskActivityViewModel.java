@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.Repository.TasksRepo;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ public class TaskActivityViewModel extends AndroidViewModel {
 
     //private MutableLiveData<String> nameTask ;
     private String task_date ;//contains whole date dd/MM/yyyy hh:mm
+
+
     private String priority, type, name, state ;
     private Integer id ;
 

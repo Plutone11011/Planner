@@ -6,11 +6,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.scheduler.AlarmReceiver;
 import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.R;
 import com.example.scheduler.Viewmodels.TaskActivityViewModel;
@@ -33,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,7 +56,7 @@ public class TaskActivity extends AppCompatActivity {
     private TextInputEditText inputTimeText, inputDateText, inputNameText ;
     private ArrayAdapter<CharSequence> adapterPriority  ;
     private ArrayAdapter<String> adapterClass ;
-    private SharedPreferences sharedPref ; //shared preference for this activity only, contain the array of task types
+    private SharedPreferences sharedPrefClassOptions, sharedPrefPendingIntentID ; //shared preference for this activity only, contain the array of task types
 
 
     //auxiliary method to start dialog fragments for date and time
@@ -90,18 +95,17 @@ public class TaskActivity extends AppCompatActivity {
         spinnerPriority = findViewById(R.id.priority_spinner);
         spinnerClass = findViewById(R.id.class_spinner);
 
+        sharedPrefPendingIntentID = getSharedPreferences(null,Context.MODE_PRIVATE);
 
-
-        sharedPref = TaskActivity.this.getPreferences(Context.MODE_PRIVATE);
+        sharedPrefClassOptions = TaskActivity.this.getPreferences(Context.MODE_PRIVATE);
 
         //editor.clear();
 
-        Set<String> s = sharedPref.getStringSet(getString(R.string.class_task_sharedpref),null);
-        if (sharedPref.getStringSet(getString(R.string.class_task_sharedpref),null) == null){
+        if (sharedPrefClassOptions.getStringSet(getString(R.string.class_task_sharedpref),null) == null){
             //first time, they're being created
 
 
-            SharedPreferences.Editor editor = sharedPref.edit();
+            SharedPreferences.Editor editor = sharedPrefClassOptions.edit();
             String []init = new String[] {"Homework","Training","Family"};
             Set<String> typesOfTasks = new HashSet<>(Arrays.asList(init));
             editor.putStringSet(getString(R.string.class_task_sharedpref),typesOfTasks);
@@ -163,10 +167,10 @@ public class TaskActivity extends AppCompatActivity {
                         String value = input.getText().toString();
 
                         adapterClass.add(value);
-                        SharedPreferences.Editor editor = sharedPref.edit();
+                        SharedPreferences.Editor editor = sharedPrefClassOptions.edit();
                         //creates a new instance because as per documentation
                         //modifying the returned set instance does not guarantee consistency
-                        Set<String> s = new HashSet<>(sharedPref.getStringSet(getString(R.string.class_task_sharedpref),new HashSet<String>()));
+                        Set<String> s = new HashSet<>(sharedPrefClassOptions.getStringSet(getString(R.string.class_task_sharedpref),new HashSet<String>()));
 
                         s.add(value);
 
@@ -199,7 +203,7 @@ public class TaskActivity extends AppCompatActivity {
         //since spinner options are editable by the user
         ArrayList<String> spinnerClassArray = new ArrayList<>();
 
-        for (String type : sharedPref.getStringSet(getString(R.string.class_task_sharedpref), new HashSet<String>())){
+        for (String type : sharedPrefClassOptions.getStringSet(getString(R.string.class_task_sharedpref), new HashSet<String>())){
             spinnerClassArray.add(type);
         }
 
@@ -224,6 +228,90 @@ public class TaskActivity extends AppCompatActivity {
         return true;
     }
 
+
+    private void setAlarmForNotifications(){
+        //sets alarm manager for this new task
+        PendingIntent pendingIntent ;
+        Calendar calendar = Calendar.getInstance();
+        try{
+            calendar.setTime(new SimpleDateFormat(getString(R.string.dateformat)
+                    + " " + getString(R.string.timeformat)).parse(taskVM.getTask_date()));
+        }
+        catch (ParseException p){
+            p.printStackTrace();
+        }
+        Intent intent = new Intent(TaskActivity.this, AlarmReceiver.class);
+        intent.putExtra("name",taskVM.getName());
+        intent.putExtra("id", taskVM.getId());
+        intent.putExtra("date",taskVM.getTask_date());
+        intent.putExtra("priority",taskVM.getPriority());
+        intent.putExtra("type",taskVM.getType());
+        intent.putExtra("state",taskVM.getState());
+        //lets broadcast receiver execute code with application permission
+        //even when the app is not active
+
+        SharedPreferences.Editor editor = sharedPrefPendingIntentID.edit();
+        Set<String> PendingIntentIDs = sharedPrefPendingIntentID.getStringSet(getString(R.string.pending_intent_sharedpref),null);
+
+        if (PendingIntentIDs != null){
+            Log.d("PENDING",PendingIntentIDs.toString());
+        }
+
+        if (PendingIntentIDs == null){
+            //no ID created yet
+
+            PendingIntentIDs = new HashSet<>();
+            PendingIntentIDs.add("0");
+
+            editor.putStringSet(getString(R.string.pending_intent_sharedpref),PendingIntentIDs);
+            editor.apply();
+            intent.putExtra(getString(R.string.id_for_alarmmanager),0);
+            pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,0,intent,0);
+        }
+        else {
+            //the ID for the new Pending Intent must either be
+            //the predecessor of the minimum in the set, if it exists
+            //or the successor of the maximum in the set. That is, the set tends to reuse ids of
+            //already used pending intent, in order to not overflow (doesn't use negative integers)
+            /*String []arrayIDs = PendingIntentIDs.toArray(new String[PendingIntentIDs.size()]);
+            Integer minID = Integer.parseInt(arrayIDs[0])  ;
+            Integer maxID = minID ;
+            for (int i = 1 ; i < arrayIDs.length; i++){
+                if (Integer.parseInt(arrayIDs[i]) < minID){
+                    minID = Integer.parseInt(arrayIDs[i]);
+                }
+                if (Integer.parseInt(arrayIDs[i]) > maxID){
+                    maxID = Integer.parseInt(arrayIDs[i]) ;
+                }
+            }
+            if (minID == 0){
+                PendingIntentIDs.add((++maxID).toString());
+                intent.putExtra(getString(R.string.id_for_alarmmanager),minID);
+                pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,maxID,intent,0);
+
+            }
+            else {
+                PendingIntentIDs.add((--minID).toString());
+                intent.putExtra(getString(R.string.id_for_alarmmanager),maxID);
+                pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,minID,intent,0);
+            }*/
+            //adds everytime a new pending id to the shared pref, specifically the successor
+            String []arrayIDs = PendingIntentIDs.toArray(new String[PendingIntentIDs.size()]);
+            Integer currentMax = Integer.parseInt(arrayIDs[PendingIntentIDs.size() - 1]);
+            PendingIntentIDs.add((++currentMax).toString());
+            editor.putStringSet(getString(R.string.pending_intent_sharedpref),PendingIntentIDs);
+            editor.apply();
+            intent.putExtra(getString(R.string.id_for_alarmmanager),currentMax);
+            pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,currentMax,intent,0);
+
+        }
+        Log.d("PENDING",PendingIntentIDs.toString());
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_ok) {
@@ -244,6 +332,8 @@ public class TaskActivity extends AppCompatActivity {
                 TasksTable t = new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
                         taskVM.getType(), taskVM.getPriority());
 
+                setAlarmForNotifications();
+
                 if (taskVM.getIntentForUpdate()){
                     t.setId(taskVM.getId()); //sets primary key so the system knows which row to update
                     taskVM.update(t);
@@ -257,8 +347,9 @@ public class TaskActivity extends AppCompatActivity {
                 return true ;
             }
             else{
-                //the user didn't insert a one of the required fields
+                //the user didn't insert one of the required fields
                 LinearLayout linearLayout = findViewById(R.id.task_layout);
+
 
                 TextView errorMessage = new TextView(getApplicationContext());
                 errorMessage.setText("Not a valid date, time, or name");

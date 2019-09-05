@@ -20,7 +20,8 @@
         <item>Important</item>
         <item>Secondary</item>
     </string-array>
-    <string name="class_task_sharedpref">Sharedpref</string>
+    <string name="class_task_sharedpref">SharedprefClass</string>
+    <string name="pending_intent_sharedpref">ShareprefIntent</string>
     <!--<string-array name="class_array">
         <item>Homework</item>
         <item>Training</item>
@@ -42,7 +43,7 @@
     <string name="pie_chart">Tasks divided by type</string>
     <string name="line_chart">Tasks completed this year</string>
     <string name="column_chart">Priority task distribution</string>
-
+    <string name="id_for_alarmmanager">Pending id</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

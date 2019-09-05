@@ -61,5 +61,8 @@ public interface TasksDAO {
     @Query("SELECT date, state FROM Tasks")
     LiveData<List<DateStatePOJO>> getDataForLineChart();
 
+    @Query("UPDATE Tasks SET state = \"Ongoing\" WHERE id = :id")
+    void updateStatetoOngoing(Integer id);
+
 }
 
