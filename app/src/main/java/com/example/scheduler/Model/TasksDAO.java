@@ -61,8 +61,11 @@ public interface TasksDAO {
     @Query("SELECT date, state FROM Tasks")
     LiveData<List<DateStatePOJO>> getDataForLineChart();
 
-    @Query("UPDATE Tasks SET state = \"Ongoing\" WHERE id = :id")
-    void updateStatetoOngoing(Integer id);
+    @Query("UPDATE Tasks SET state = \"Ongoing\" WHERE name = :name and date = :date")
+    void updateStatetoOngoing(String name, String date);
+
+    @Query("UPDATE Tasks SET state = \"Completed\" WHERE name = :name and date = :date")
+    void updateStatetoCompleted(String name, String date);
 
 }
 

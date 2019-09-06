@@ -39,11 +39,12 @@
     <string name="deleteAction">Delete</string>
     <string name="name_list_dialog">listTaskKey</string>
     <string name="date_list_dialog">datesTaskKey</string>
-    <string name="isDelete">is_delete</string>
+    <string name="action_dialog">what Action</string>
     <string name="pie_chart">Tasks divided by type</string>
     <string name="line_chart">Tasks completed this year</string>
     <string name="column_chart">Priority task distribution</string>
     <string name="id_for_alarmmanager">Pending id</string>
+    <string name="complete_task">Completed</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -31,15 +31,8 @@ public class TaskActivityViewModel extends AndroidViewModel {
 
 
     private String priority, type, name, state ;
-    private Integer id ;
+    //private Integer id ;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     private Boolean intentForUpdate ;
 

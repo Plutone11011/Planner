@@ -80,8 +80,12 @@ public class TasksRepo {
     public LiveData<List<nameClassPOJO>> getAllTypes(){ return tasksDAO.getAllTypes();}
     public LiveData<List<DateStatePOJO>> getDataForLineChart(){ return tasksDAO.getDataForLineChart();}
 
-    public void updateStatetoOngoing(String state, Integer id){
-        new updateStatetoOngoingAsyncTask(tasksDAO,id);
+    public void updateStatetoOngoing(String name, String date){
+        new updateStatetoOngoingAsyncTask(tasksDAO, name, date).execute();
+    }
+
+    public void updateStatetoCompleted(String name, String date){
+        new updateStatetoCompletedAsyncTask(tasksDAO, name, date).execute();
     }
     /**** From here on, asynctask classes****/
     //every method except from the ones returning live data objects need to
@@ -122,20 +126,41 @@ public class TasksRepo {
     private static class updateStatetoOngoingAsyncTask extends AsyncTask<Void, Void, Void>{
 
         private TasksDAO tasksDAO ;
-        private Integer id ;
+        private String name, date ;
 
-        public updateStatetoOngoingAsyncTask(TasksDAO tasksDAO, Integer id) {
+        public updateStatetoOngoingAsyncTask(TasksDAO tasksDAO, String name, String date) {
             this.tasksDAO = tasksDAO;
-            this.id = id;
+            this.date = date;
+            this.name = name;
 
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            tasksDAO.updateStatetoOngoing(id);
+            tasksDAO.updateStatetoOngoing(name, date);
             return null;
         }
     }
+
+    private static class updateStatetoCompletedAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        private TasksDAO tasksDAO ;
+        private String name, date ;
+
+        public updateStatetoCompletedAsyncTask(TasksDAO tasksDAO, String name, String date) {
+            this.tasksDAO = tasksDAO;
+            this.date = date;
+            this.name = name;
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            tasksDAO.updateStatetoCompleted(name, date);
+            return null;
+        }
+    }
+
 
     private static class DeleteTasksAsyncTask extends AsyncTask<TasksTable, Void, Void>{
 

@@ -54,12 +54,13 @@ public class MainActivity extends AppCompatActivity{
         mCompactCalendarView.removeEvent(e);
     }
 
-    private void startDialogFragment(String[] listOfCurrentTasks, String[] dateOfCurrentTasks, DialogFragment dialogFragment, String tag, Boolean isDelete){
+    private void startDialogFragment(String[] listOfCurrentTasks, String[] dateOfCurrentTasks, DialogFragment dialogFragment, String tag, Integer action){
         Bundle args = new Bundle();
 
         args.putStringArray(getString(R.string.name_list_dialog), listOfCurrentTasks);
         args.putStringArray(getString(R.string.date_list_dialog),dateOfCurrentTasks);
-        args.putBoolean(getString(R.string.isDelete),isDelete);
+        //true if task needs to be deleted, false if it is to be updated, null if it is to be completed
+        args.putInt(getString(R.string.action_dialog),action);
 
         dialogFragment.setArguments(args);
         dialogFragment.show(getSupportFragmentManager(), tag);
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity{
             public void onDayClick(final Date dateClicked) {
 
 
-                //Log.d("CLICK", dateClicked.toString());
+                Log.d("CLICK", dateClicked.toString());
                 Boolean isDayOfEvent = false ;
                 Calendar cal = Calendar.getInstance();
 
@@ -142,6 +143,9 @@ public class MainActivity extends AppCompatActivity{
                     Date dateEv = new Date(ev.getTimeInMillis());
                     cal.setTime(dateEv);
                     //just need to compare dd MM yyyy
+                    //because dateclicked doesn't contain that part
+                    //since there could be multiple events in the same day
+                    //but it would still be the same date
                     cal.set(Calendar.HOUR_OF_DAY,0);
                     cal.set(Calendar.MINUTE,0);
                     cal.set(Calendar.SECOND,0);
@@ -156,14 +160,13 @@ public class MainActivity extends AppCompatActivity{
                     PopupMenu popup = new PopupMenu(MainActivity.this, mCompactCalendarView);
                     popup.inflate(R.menu.popup_menu);
 
-
+                    //takes every task of dateclicked and reorganizes names and full dates
                     List<Event> list = mCompactCalendarView.getEvents(dateClicked);
-                    final String[] listOfCurrentTasks = new String[list.size()];
-                    //tasks have same day month and year but not hh:mm:ss
+                    final String[] namesOfCurrentTasks = new String[list.size()];
                     final String[] datesOfCurrentTasks = new String[list.size()];
                     int i = 0 ;
                     for (Event ev : list){
-                        listOfCurrentTasks[i] = (String) ev.getData();
+                        namesOfCurrentTasks[i] = (String) ev.getData();
                         datesOfCurrentTasks[i] = dateformat.format(new Date(ev.getTimeInMillis()));
                         Log.d("MainActivity",datesOfCurrentTasks[i]);
                         i++ ;
@@ -178,13 +181,16 @@ public class MainActivity extends AppCompatActivity{
                             switch(item.getItemId()){
                                 case R.id.popup_delete:
                                     //need to ask which one I guess?
-                                    startDialogFragment(listOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"delete",true);
+                                    startDialogFragment(namesOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"delete",0);
 
                                     break ;
                                 case R.id.popup_edit:
-                                    startDialogFragment(listOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"edit",false);
+                                    startDialogFragment(namesOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"edit",1);
 
                                     break ;
+
+                                case R.id.popup_complete:
+                                    startDialogFragment(namesOfCurrentTasks,datesOfCurrentTasks,dialogFragment,"completed",2);
 
                                 default:
                                     return false ;

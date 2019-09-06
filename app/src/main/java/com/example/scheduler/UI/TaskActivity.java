@@ -242,7 +242,7 @@ public class TaskActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(TaskActivity.this, AlarmReceiver.class);
         intent.putExtra("name",taskVM.getName());
-        intent.putExtra("id", taskVM.getId());
+        //intent.putExtra("id", taskVM.getId());
         intent.putExtra("date",taskVM.getTask_date());
         intent.putExtra("priority",taskVM.getPriority());
         intent.putExtra("type",taskVM.getType());
@@ -269,32 +269,6 @@ public class TaskActivity extends AppCompatActivity {
             pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,0,intent,0);
         }
         else {
-            //the ID for the new Pending Intent must either be
-            //the predecessor of the minimum in the set, if it exists
-            //or the successor of the maximum in the set. That is, the set tends to reuse ids of
-            //already used pending intent, in order to not overflow (doesn't use negative integers)
-            /*String []arrayIDs = PendingIntentIDs.toArray(new String[PendingIntentIDs.size()]);
-            Integer minID = Integer.parseInt(arrayIDs[0])  ;
-            Integer maxID = minID ;
-            for (int i = 1 ; i < arrayIDs.length; i++){
-                if (Integer.parseInt(arrayIDs[i]) < minID){
-                    minID = Integer.parseInt(arrayIDs[i]);
-                }
-                if (Integer.parseInt(arrayIDs[i]) > maxID){
-                    maxID = Integer.parseInt(arrayIDs[i]) ;
-                }
-            }
-            if (minID == 0){
-                PendingIntentIDs.add((++maxID).toString());
-                intent.putExtra(getString(R.string.id_for_alarmmanager),minID);
-                pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,maxID,intent,0);
-
-            }
-            else {
-                PendingIntentIDs.add((--minID).toString());
-                intent.putExtra(getString(R.string.id_for_alarmmanager),maxID);
-                pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,minID,intent,0);
-            }*/
             //adds everytime a new pending id to the shared pref, specifically the successor
             String []arrayIDs = PendingIntentIDs.toArray(new String[PendingIntentIDs.size()]);
             Integer currentMax = Integer.parseInt(arrayIDs[PendingIntentIDs.size() - 1]);
@@ -335,7 +309,7 @@ public class TaskActivity extends AppCompatActivity {
                 setAlarmForNotifications();
 
                 if (taskVM.getIntentForUpdate()){
-                    t.setId(taskVM.getId()); //sets primary key so the system knows which row to update
+                    //t.setId(taskVM.getId()); //sets primary key so the system knows which row to update
                     taskVM.update(t);
                 }
                 else {
@@ -399,7 +373,7 @@ public class TaskActivity extends AppCompatActivity {
                 inputTimeText.getText().append(fullDate.substring(matcher.end()));
             }
             taskVM.setIntentForUpdate(true);
-            taskVM.setId(intent.getIntExtra("id",-1));
+            //taskVM.setId(intent.getIntExtra("id",-1));
             //sets state because it could have been changed by notifications
             //while the default state for creation of a new task is pending
             taskVM.setState(intent.getCharSequenceExtra("state").toString());

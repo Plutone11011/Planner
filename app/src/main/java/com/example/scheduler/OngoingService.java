@@ -23,8 +23,9 @@ public class OngoingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("SERVICE", "command");
-        Log.d("SERVICE",((Integer)intent.getIntExtra("id",0)).toString());
-        tasksRepo.updateStatetoOngoing("Ongoing",intent.getIntExtra("id",0));
+
+        tasksRepo.updateStatetoOngoing(intent.getStringExtra("name"),intent.getStringExtra("date"));
+        stopService(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -34,4 +35,6 @@ public class OngoingService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+
 }

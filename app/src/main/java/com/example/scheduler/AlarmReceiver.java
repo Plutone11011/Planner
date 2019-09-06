@@ -14,6 +14,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.scheduler.UI.MainActivity;
+import com.example.scheduler.UI.TaskActivity;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -32,9 +33,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         initChannels(context);
 
         Intent intentForService = new Intent(context, OngoingService.class);
-        intentForService.putExtra("id",intent.getIntExtra("id",0));
+        intentForService.putExtra("name",intent.getStringExtra("name"));
+        intentForService.putExtra("date",intent.getStringExtra("date"));
         Intent intentforMainTap = new Intent(context, MainActivity.class);
-
+        Intent intentForPostponing = new Intent(context, TaskActivity.class);
+        intentForPostponing.putExtra("name", intent.getStringExtra("name"));
+        intentForPostponing.putExtra("date",intent.getStringExtra("date"));
+        intentForPostponing.putExtra("priority",intent.getStringExtra("priority"));
+        intentForPostponing.putExtra("state",intent.getStringExtra("state"));
+        intentForPostponing.putExtra("type",intent.getStringExtra("type"));
 
         Notification notification =  new NotificationCompat.Builder(context,channelID)
                 .setSmallIcon(R.drawable.ic_event_note_white_24dp)
@@ -44,7 +51,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                         ,intentforMainTap,PendingIntent.FLAG_CANCEL_CURRENT)) //with this flag the pending intent that caused this broadcast is canceled
                 .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_done_white_24dp,"Ongoing",
                         PendingIntent.getService(context, intent.getIntExtra("Pending id",0),intentForService,PendingIntent.FLAG_CANCEL_CURRENT))
-                        .build()).build();
+                        .build())
+                .addAction(new NotificationCompat.Action.Builder(R.drawable.ic_done_white_24dp, "Postpone",
+                        PendingIntent.getActivity(context, intent.getIntExtra("Pending id",0),intentForPostponing,
+                                PendingIntent.FLAG_CANCEL_CURRENT)).build()).build();
 
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         //PendingIntent pendingIntent = PendingIntent.getBroadcast(context,intent.getIntExtra("id_for_alarmmanager",0)

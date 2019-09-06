@@ -11,7 +11,16 @@ import com.example.scheduler.Repository.TasksRepo;
 public class SelectTaskFragmentViewModel extends AndroidViewModel {
 
     private TasksRepo tasksRepo ;
-    private Boolean isDelete ;
+    private Integer action ;
+
+    public Integer getAction() {
+        return action;
+    }
+
+    public void setAction(Integer action) {
+        this.action = action;
+    }
+
     private String t_name, t_date ;
 
     public SelectTaskFragmentViewModel(@NonNull Application application) {
@@ -35,13 +44,8 @@ public class SelectTaskFragmentViewModel extends AndroidViewModel {
         this.t_date = t_date;
     }
 
-    public Boolean getDelete() {
-        return isDelete;
-    }
 
-    public void setDelete(Boolean delete) {
-        isDelete = delete;
-    }
+
 
     public void delete(TasksTable tasksTable){
         tasksRepo.delete(tasksTable);
@@ -54,4 +58,8 @@ public class SelectTaskFragmentViewModel extends AndroidViewModel {
         tasksRepo.deleteTaskWithPrimaryKey(date, name);
     }
 
+
+    public void updateStatetoCompleted(String name, String date){
+        tasksRepo.updateStatetoCompleted(name, date);
+    }
 }

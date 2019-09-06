@@ -4,11 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Tasks")
+@Entity(tableName = "Tasks", primaryKeys = {"name","date"})
 public class TasksTable {
 
-    @PrimaryKey(autoGenerate = true)
-    private @NonNull Integer id ;
+    //@PrimaryKey(autoGenerate = true)
+    //private @NonNull Integer id ;
 
     private @NonNull String name ;
 
@@ -29,15 +29,6 @@ public class TasksTable {
         this.state = state;
         this.type = type;
         this.priority = priority;
-    }
-
-    @NonNull
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(@NonNull Integer id) {
-        this.id = id;
     }
 
     @NonNull
