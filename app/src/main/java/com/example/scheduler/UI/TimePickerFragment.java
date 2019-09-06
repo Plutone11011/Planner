@@ -39,8 +39,20 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         //the user chose a time
         Bundle args = getArguments();
         Editable inputField = (Editable) args.getCharSequence(getString(R.string.inputTimekey));
+        String  first10minutes = "0";
+
+
+        if (minute >= 10){
+            first10minutes = "";
+        }
 
         inputField.clear();
-        inputField.append(((Integer)hourOfDay).toString() + ":" + ((Integer)minute).toString());
+        if (hourOfDay >= 0 && hourOfDay <= 9){
+            inputField.append("0" + ((Integer)hourOfDay).toString() + ":" + first10minutes + ((Integer)minute).toString());
+        }
+        else{
+            inputField.append(((Integer)hourOfDay).toString() + ":" + first10minutes + ((Integer)minute).toString());
+        }
+
     }
 }
