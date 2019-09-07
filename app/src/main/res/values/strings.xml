@@ -6,9 +6,13 @@
     <string name="title_activity_task">taskactivity</string>
     <string name="action_ok">OK</string>
     <string name="action_back">Back</string>
+    <string name="action_list">Task list</string>
     <string name="taskname">Name</string>
     <string name="taskdate">Date</string>
-    <string name="dateformat">dd/MM/yyyy</string>
+    <string name="dateformat">dd-MM-yyyy</string>
+    <string name="timeformat">HH:mm</string>
+    <string name="inputTimekey">timeKey</string>
+    <string name="inputDatekey">dateKey</string>
     <string name="taskpriority">Priority</string>
     <string name="taskclass">Type of task</string>
     <string-array name="priority_array">
@@ -16,10 +20,31 @@
         <item>Important</item>
         <item>Secondary</item>
     </string-array>
-    <string-array name="class_array">
+    <string name="class_task_sharedpref">SharedprefClass</string>
+    <string name="pending_intent_sharedpref">ShareprefIntent</string>
+    <!--<string-array name="class_array">
         <item>Homework</item>
         <item>Training</item>
         <item>Family</item>
-        <!-- and more-->
+         and more
+    </string-array>-->
+    <string-array name="states_array">
+        <item>Pending</item>
+        <item>Ongoing</item>
+        <item>Completed</item>
     </string-array>
+    <string name="buttonDate">Set Date</string>
+    <string name="buttonTime">Set Time</string>
+    <string name="editAction">Edit</string>
+    <string name="deleteAction">Delete</string>
+    <string name="name_list_dialog">listTaskKey</string>
+    <string name="date_list_dialog">datesTaskKey</string>
+    <string name="action_dialog">what Action</string>
+    <string name="pie_chart">Tasks divided by type</string>
+    <string name="line_chart">Tasks completed this year</string>
+    <string name="column_chart">Priority task distribution</string>
+    <string name="id_for_alarmmanager">Pending id</string>
+    <string name="complete_task">Completed</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
