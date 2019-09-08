@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -35,14 +36,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent intentForService = new Intent(context, OngoingService.class);
         intentForService.putExtra("name",intent.getStringExtra("name"));
         intentForService.putExtra("date",intent.getStringExtra("date"));
+        intentForService.putExtra("Notification_ID",notificationID);
+
         Intent intentforMainTap = new Intent(context, MainActivity.class);
         Intent intentForPostponing = new Intent(context, TaskActivity.class);
+
         intentForPostponing.putExtra("name", intent.getStringExtra("name"));
         intentForPostponing.putExtra("date",intent.getStringExtra("date"));
         intentForPostponing.putExtra("priority",intent.getStringExtra("priority"));
         intentForPostponing.putExtra("state",intent.getStringExtra("state"));
         intentForPostponing.putExtra("type",intent.getStringExtra("type"));
+        intentForPostponing.putExtra("Notification_ID",notificationID);
 
+        Bundle bundle = new Bundle();
+        bundle.putInt("Notification_ID",notificationID);
         Notification notification =  new NotificationCompat.Builder(context,channelID)
                 .setSmallIcon(R.drawable.ic_event_note_white_24dp)
                 .setContentTitle("Time to get to work!")

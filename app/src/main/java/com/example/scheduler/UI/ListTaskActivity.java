@@ -29,7 +29,7 @@ public class ListTaskActivity extends AppCompatActivity {
 
         //do not want title showing in this activity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        myToolbar.setTitle("");
+        myToolbar.setTitle("Every task");
         myToolbar.setSubtitle("");
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

@@ -72,14 +72,14 @@ public class TabLineChart extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 Calendar myCalendar = Calendar.getInstance();
 
-                List axisValues = new ArrayList(); //will hold data for x and y axis
-                List yAxisValues = new ArrayList();
+                List<AxisValue> axisValues = new ArrayList<>(); //will hold data for x and y axis
+                List<PointValue> yAxisValues = new ArrayList<>();
 
 
 
                 yAxisData = new Integer[axisData.length]; //must have points corresponding to months, x data
                 for (DateStatePOJO datestate: dateStatePOJOS){
-                    if (datestate.State == "Completed"){
+                    if (datestate.State.equals("Completed")){
                         //here the control that the task state is actually "complete"
                         //parse every date string, discard those that are not of this current year
                         try{
@@ -115,7 +115,7 @@ public class TabLineChart extends Fragment {
                 }
                 Line line = new Line(yAxisValues);//the line holding y values which will appear inside the chart
                 //add the line holding y axis values to the list of lines of the chart
-                List lines = new ArrayList();
+                List<Line> lines = new ArrayList<>();
                 lines.add(line);
 
                 data = new LineChartData();

@@ -30,7 +30,7 @@ public class UsageGraphActivity extends AppCompatActivity {
 
         //do not want title showing in this activity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        myToolbar.setTitle("");
+        myToolbar.setTitle("Charts");
         myToolbar.setSubtitle("");
 
         //back navigation

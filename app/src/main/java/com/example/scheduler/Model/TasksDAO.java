@@ -66,6 +66,5 @@ public interface TasksDAO {
 
     @Query("UPDATE Tasks SET state = \"Completed\" WHERE name = :name and date = :date")
     void updateStatetoCompleted(String name, String date);
-
 }
 

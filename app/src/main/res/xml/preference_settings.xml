@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.preference.PreferenceCategory
+        app:key="notifications_category"
+        app:title="Notifications">
+
+        <SwitchPreferenceCompat
+            android:id="@+id/notifications_id"
+            app:key="notifications"
+            app:title="Disable notifications"/>
+
+        <SwitchPreferenceCompat
+            android:id="@+id/notifications_important_id"
+            app:key="notifications_important"
+            app:title="Disable important notifications"
+            />
+
+        <SwitchPreferenceCompat
+            android:id="@+id/notifications_secondary_id"
+            app:key="notifications_secondary"
+            app:title="Disable secondary notifications"
+            />
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        app:key="graphics_category"
+        app:title="Graphics">
+        <SwitchPreferenceCompat
+            android:id="@+id/calendar_id"
+            app:key="calendar"
+            app:title="Show other month days"/>
+
+
+    </androidx.preference.PreferenceCategory>
+    <Preference
+        app:key="feedback"
+        app:title="Send feedback"
+        app:summary="Report technical issues or suggest new features"/>
+
+</PreferenceScreen>

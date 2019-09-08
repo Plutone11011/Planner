@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.example.scheduler.Model.DateStatePOJO;
 import com.example.scheduler.Model.datetimePOJO;
 import com.example.scheduler.R;
 import com.example.scheduler.Repository.TasksRepo;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity{
     private ArrayList<Event> eventArrayList ;
     private MainActivityViewModel mainVM ;
     private SimpleDateFormat dateformat ;
+    private SharedPreferences sharedPreferencesSettings ;
 
     //add event to the calendar view
     private void addEvent(long ldate, String name){
@@ -81,7 +85,9 @@ public class MainActivity extends AppCompatActivity{
         myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
+        sharedPreferencesSettings = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */);
 
+        mCompactCalendarView.shouldDrawIndicatorsBelowSelectedDays(true);
 
         mainVM = ViewModelProviders.of(this).get(MainActivityViewModel.class);
 
@@ -242,6 +248,7 @@ public class MainActivity extends AppCompatActivity{
                 return true ;
 
             case R.id.action_settings:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
 
@@ -262,7 +269,12 @@ public class MainActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
 
-
+        if (sharedPreferencesSettings.getBoolean("calendar",false)){
+            mCompactCalendarView.displayOtherMonthDays(true);
+        }
+        else {
+            mCompactCalendarView.displayOtherMonthDays(false);
+        }
     }
 
     //after task activity main will always call onResume, not sure about other lifecycle methods
@@ -291,4 +303,9 @@ public class MainActivity extends AppCompatActivity{
 
         //mCompactCalendarView.removeAllEvents();
     }*/
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,8 +57,7 @@ public class TaskActivity extends AppCompatActivity {
     private TextInputEditText inputTimeText, inputDateText, inputNameText ;
     private ArrayAdapter<CharSequence> adapterPriority  ;
     private ArrayAdapter<String> adapterClass ;
-    private SharedPreferences sharedPrefClassOptions, sharedPrefPendingIntentID ; //shared preference for this activity only, contain the array of task types
-
+    private SharedPreferences sharedPrefClassOptions, sharedPrefPendingIntentID, sharedPreferencesSettings ;
 
     //auxiliary method to start dialog fragments for date and time
     private void startDialogFragment(TextInputEditText mTextInputEditText, DialogFragment dialogFragment, String tag, String key){
@@ -98,6 +98,9 @@ public class TaskActivity extends AppCompatActivity {
         sharedPrefPendingIntentID = getSharedPreferences(null,Context.MODE_PRIVATE);
 
         sharedPrefClassOptions = TaskActivity.this.getPreferences(Context.MODE_PRIVATE);
+        //method that works anythere in the app, allows to retrieve
+        //user settings that are by default saved in SharedPreferences
+        sharedPreferencesSettings = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */);
 
         //editor.clear();
 
@@ -306,7 +309,30 @@ public class TaskActivity extends AppCompatActivity {
                 TasksTable t = new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
                         taskVM.getType(), taskVM.getPriority());
 
-                setAlarmForNotifications();
+                switch(taskVM.getPriority()){
+                    case "Urgent":
+                        if (!sharedPreferencesSettings.getBoolean("notifications",true)){
+                            //so only if user settings allow it
+                            setAlarmForNotifications();
+
+                        }
+                        break ;
+                    case "Important":
+                        if (!sharedPreferencesSettings.getBoolean("notifications_important",true)){
+                            //so only if user settings allow it
+                            setAlarmForNotifications();
+
+                        }
+                        break ;
+                    case "Secondary":
+                        if (!sharedPreferencesSettings.getBoolean("notifications_secondary",true)){
+                            //so only if user settings allow it
+                            setAlarmForNotifications();
+
+                        }
+                        break ;
+                }
+
 
                 if (taskVM.getIntentForUpdate()){
                     //t.setId(taskVM.getId()); //sets primary key so the system knows which row to update
@@ -358,8 +384,13 @@ public class TaskActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String fullDate ;
 
+        if (intent.getIntExtra("Notification_ID",-1) != 0){
+            NotificationManager nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.cancel(intent.getIntExtra("Notification_ID",-1));
+        }
         //retrieves intent extra data and fills the input fields
         if (intent.getCharSequenceExtra("name") != null && intent.getCharSequenceExtra("date") != null){
+
             inputNameText.getText().append(intent.getCharSequenceExtra("name"));
             spinnerPriority.setSelection(adapterPriority.getPosition(intent.getCharSequenceExtra("priority")));
             spinnerClass.setSelection(adapterClass.getPosition((String)intent.getCharSequenceExtra("type")));

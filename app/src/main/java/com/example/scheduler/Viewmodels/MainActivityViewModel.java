@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.scheduler.Model.DateStatePOJO;
 import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.Model.datetimePOJO;
 import com.example.scheduler.Repository.TasksRepo;
@@ -21,23 +22,20 @@ public class MainActivityViewModel extends AndroidViewModel {
 
 
 
-    private LiveData<List<datetimePOJO>> dates ;
+    private LiveData<List<datetimePOJO>> dates_names ;
     private TasksRepo tasksRepo ;
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
         tasksRepo = new TasksRepo(application);
-        dates = tasksRepo.getAllDates();
+        dates_names = tasksRepo.getAllDates();
     }
 
     public LiveData<List<datetimePOJO>> getDates() {
-        return dates;
+        return dates_names;
     }
 
     public void nukeTable(){
         tasksRepo.nukeTable();
     }
-
-
-
 }
