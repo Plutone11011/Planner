@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import android.view.ViewGroup;
 import com.example.scheduler.Model.namePrioPOJO;
 import com.example.scheduler.PriorityEnum;
 import com.example.scheduler.R;
-import com.example.scheduler.Viewmodels.TabPriorityViewModel;
+import com.example.scheduler.Viewmodels.HistogramViewModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -29,13 +28,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.ColumnChartView;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -43,7 +35,7 @@ public class TabHistogram extends Fragment {
 
     private BarChart barChartView;
     private BarData barChartData ;
-    private TabPriorityViewModel TabPriorityVM; //needs update of priority
+    private HistogramViewModel histogramViewModel; //needs update of priority
 
 
 
@@ -54,7 +46,7 @@ public class TabHistogram extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TabPriorityVM = ViewModelProviders.of(this).get(TabPriorityViewModel.class);
+        histogramViewModel = ViewModelProviders.of(this).get(HistogramViewModel.class);
     }
 
     @Override
@@ -67,7 +59,7 @@ public class TabHistogram extends Fragment {
         barChartView.setEnabled(true);
         final int []prioCounter = new int[]{0,0,0};
 
-        TabPriorityVM.getListOfNamesandPriorities().observe(this, new Observer<List<namePrioPOJO>>() {
+        histogramViewModel.getListOfNamesandPriorities().observe(this, new Observer<List<namePrioPOJO>>() {
             @Override
             public void onChanged(List<namePrioPOJO> namePrioPOJOS) {
                 //will show the count of tasks for each priority

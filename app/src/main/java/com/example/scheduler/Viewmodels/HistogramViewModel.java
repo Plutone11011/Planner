@@ -7,23 +7,24 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.scheduler.Model.datetimePOJO;
-import com.example.scheduler.Model.nameClassPOJO;
+import com.example.scheduler.Model.namePrioPOJO;
 import com.example.scheduler.Repository.TasksRepo;
 
 import java.util.List;
 
-public class TabClassViewModel extends AndroidViewModel {
+public class HistogramViewModel extends AndroidViewModel {
 
     private TasksRepo tasksRepo ;
-    private LiveData<List<nameClassPOJO>> ListOfNamesandTypes ;
+    private LiveData<List<namePrioPOJO>> ListOfNamesandPriorities ;
 
-    public TabClassViewModel(@NonNull Application application) {
+
+    public HistogramViewModel(@NonNull Application application) {
         super(application);
         this.tasksRepo = new TasksRepo(application);
-        ListOfNamesandTypes = tasksRepo.getAllTypes();
+        ListOfNamesandPriorities = tasksRepo.getAllPriorities();
     }
 
-    public LiveData<List<nameClassPOJO>> getListOfNamesandTypes() {
-        return ListOfNamesandTypes;
+    public LiveData<List<namePrioPOJO>> getListOfNamesandPriorities() {
+        return ListOfNamesandPriorities;
     }
 }

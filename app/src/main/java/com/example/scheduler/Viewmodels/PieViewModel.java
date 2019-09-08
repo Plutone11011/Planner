@@ -7,24 +7,23 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.scheduler.Model.datetimePOJO;
-import com.example.scheduler.Model.namePrioPOJO;
+import com.example.scheduler.Model.nameClassPOJO;
 import com.example.scheduler.Repository.TasksRepo;
 
 import java.util.List;
 
-public class TabPriorityViewModel extends AndroidViewModel {
+public class PieViewModel extends AndroidViewModel {
 
     private TasksRepo tasksRepo ;
-    private LiveData<List<namePrioPOJO>> ListOfNamesandPriorities ;
+    private LiveData<List<nameClassPOJO>> ListOfNamesandTypes ;
 
-
-    public TabPriorityViewModel(@NonNull Application application) {
+    public PieViewModel(@NonNull Application application) {
         super(application);
         this.tasksRepo = new TasksRepo(application);
-        ListOfNamesandPriorities = tasksRepo.getAllPriorities();
+        ListOfNamesandTypes = tasksRepo.getAllTypes();
     }
 
-    public LiveData<List<namePrioPOJO>> getListOfNamesandPriorities() {
-        return ListOfNamesandPriorities;
+    public LiveData<List<nameClassPOJO>> getListOfNamesandTypes() {
+        return ListOfNamesandTypes;
     }
 }

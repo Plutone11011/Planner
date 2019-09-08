@@ -6,24 +6,24 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.scheduler.Model.nameStatePOJO;
+import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.Repository.TasksRepo;
 
 import java.util.List;
 
-public class TabStateViewModel extends AndroidViewModel {
+public class ListTaskViewModel extends AndroidViewModel {
 
     private TasksRepo tasksRepo ;
-    private LiveData<List<nameStatePOJO>> ListOfNamesandStates ;
+    private LiveData<List<TasksTable>> rows ;
 
 
-    public TabStateViewModel(@NonNull Application application) {
+    public ListTaskViewModel(@NonNull Application application) {
         super(application);
         this.tasksRepo = new TasksRepo(application);
-        ListOfNamesandStates = tasksRepo.getAllStates();
+        this.rows = tasksRepo.getEveryTask();
     }
 
-    public LiveData<List<nameStatePOJO>> getListOfNamesandStates() {
-        return ListOfNamesandStates;
+    public LiveData<List<TasksTable>> getRows() {
+        return rows;
     }
 }
