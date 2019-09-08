@@ -24,14 +24,6 @@ public interface TasksDAO {
     @Query("DELETE FROM Tasks")
     void nukeTable();
 
-    //query that returns all tasks with a certain priority
-    @Query("SELECT * FROM Tasks WHERE priority = :prio")
-    List<TasksTable> getTasksWithPriority(String prio);
-
-    //query that returns every task of a certain type
-    @Query("SELECT * FROM Tasks WHERE type = :tp")
-    List<TasksTable> getTasksOfType(String tp);
-
     //query that returns a list of all the dates and names of the tasks
     @Query("SELECT date, name FROM Tasks")
     LiveData<List<datetimePOJO>> getAllDates();
@@ -39,10 +31,6 @@ public interface TasksDAO {
     //query that returns a list of all the priorities and names of the tasks
     @Query("SELECT name, priority FROM Tasks")
     LiveData<List<namePrioPOJO>> getAllPriorities();
-
-    //query that returns a list of all the states and names of the tasks
-    @Query("SELECT name, state FROM Tasks")
-    LiveData<List<nameStatePOJO>> getAllStates();
 
     //query that returns a list of all the types and names of the tasks
     @Query("SELECT name, type FROM Tasks")
@@ -66,5 +54,8 @@ public interface TasksDAO {
 
     @Query("UPDATE Tasks SET state = \"Completed\" WHERE name = :name and date = :date")
     void updateStatetoCompleted(String name, String date);
+
+    @Query("SELECT * FROM Tasks")
+    LiveData<List<TasksTable>> getEveryTask();
 }
 

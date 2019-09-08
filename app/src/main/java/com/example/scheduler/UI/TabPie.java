@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.scheduler.Model.nameClassPOJO;
 import com.example.scheduler.R;
-import com.example.scheduler.Viewmodels.TabClassViewModel;
+import com.example.scheduler.Viewmodels.PieViewModel;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class TabPie extends Fragment {
 
     private PieChartView pieChartView ;
     private List<SliceValue> pieData ;
-    private TabClassViewModel tabClassVM ;
+    private PieViewModel pieVM ;
 
     public TabPie() {
         // Required empty public constructor
@@ -48,7 +48,7 @@ public class TabPie extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tabClassVM = ViewModelProviders.of(this).get(TabClassViewModel.class);
+        pieVM = ViewModelProviders.of(this).get(PieViewModel.class);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class TabPie extends Fragment {
         pieChartView = v.findViewById(R.id.chartpie);
         pieData  = new ArrayList<>();
 
-        tabClassVM.getListOfNamesandTypes().observe(this, new Observer<List<nameClassPOJO>>() {
+        pieVM.getListOfNamesandTypes().observe(this, new Observer<List<nameClassPOJO>>() {
             @Override
             public void onChanged(List<nameClassPOJO> nameClassPOJOS) {
 

@@ -76,9 +76,9 @@ public class TasksRepo {
         return tasksDAO.getAllDates() ;
     }
     public LiveData<List<namePrioPOJO>> getAllPriorities(){ return tasksDAO.getAllPriorities();}
-    public LiveData<List<nameStatePOJO>> getAllStates(){ return tasksDAO.getAllStates();}
     public LiveData<List<nameClassPOJO>> getAllTypes(){ return tasksDAO.getAllTypes();}
     public LiveData<List<DateStatePOJO>> getDataForLineChart(){ return tasksDAO.getDataForLineChart();}
+    public LiveData<List<TasksTable>> getEveryTask(){ return tasksDAO.getEveryTask() ;}
 
     public void updateStatetoOngoing(String name, String date){
         new updateStatetoOngoingAsyncTask(tasksDAO, name, date).execute();
@@ -87,11 +87,15 @@ public class TasksRepo {
     public void updateStatetoCompleted(String name, String date){
         new updateStatetoCompletedAsyncTask(tasksDAO, name, date).execute();
     }
+
+
     /**** From here on, asynctask classes****/
     //every method except from the ones returning live data objects need to
     //be executed in the bg, so there's an asynctask for each method
     //need to be static in order to avoid having references to repo and causing memory leaks
     //then there needs to be a dao field for the db operations and a constructor to initialize it
+
+
     private static class InsertTasksAsyncTask extends AsyncTask<TasksTable, Void, Void>{
 
         private TasksDAO tasksDAO ;

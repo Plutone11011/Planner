@@ -1,22 +1,33 @@
 package com.example.scheduler.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.example.scheduler.Adapters.SectionsPagerAdapter;
+import com.example.scheduler.Model.TasksTable;
 import com.example.scheduler.R;
-import com.google.android.material.tabs.TabLayout;
+import com.example.scheduler.Viewmodels.ListTaskViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListTaskActivity extends AppCompatActivity {
 
-    private SectionsPagerAdapter mSectionsPagerAdapter ;
-    private ViewPager mViewPager ;
+    private ArrayList<String> items ;
+    private ArrayAdapter<String> arrayAdapter;
+    private ListView listView ;
+    private ListTaskViewModel listTaskVM ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +43,23 @@ public class ListTaskActivity extends AppCompatActivity {
         myToolbar.setTitle("Every task");
         myToolbar.setSubtitle("");
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = findViewById(R.id.pager); //ViewPager allows scrollable behaviour
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        items = new ArrayList<>();
+        listView = findViewById(R.id.listviewSearch);
+        final TextView textView = findViewById(R.id.emptyViewSearch);//textview that also contains "No results" in case search goes wrong
 
-        TabLayout tabLayout = findViewById(R.id.tablayout);
-        //links TabLayout with ViewPager
-        tabLayout.setupWithViewPager(mViewPager);
+        listTaskVM = ViewModelProviders.of(this).get(ListTaskViewModel.class);
 
+        listTaskVM.getRows().observe(this, new Observer<List<TasksTable>>() {
+            @Override
+            public void onChanged(List<TasksTable> tasksTables) {
+                for (TasksTable rows : tasksTables){
+                    items.add(rows.getName() + " " + rows.getDate() + " " + rows.getPriority() + " " + rows.getState() + " " + rows.getType());
+                }
+                arrayAdapter = new ArrayAdapter<String>(ListTaskActivity.this, android.R.layout.simple_list_item_1,items);
+                listView.setAdapter(arrayAdapter);
+                listView.setEmptyView(textView);
+            }
+        });
         //back navigation
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,4 +69,27 @@ public class ListTaskActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu,menu);
+
+        MenuItem search = menu.findItem(R.id.action_search);
+
+        SearchView searchView = (SearchView) search.getActionView(); //actual searchview
+        searchView.setQueryHint("Search");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arrayAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
 }
