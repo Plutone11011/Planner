@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,20 +59,34 @@ public class TabHistogram extends Fragment {
         barChartView = v.findViewById(R.id.barchart);
         barChartView.setEnabled(true);
         final int []prioCounter = new int[]{0,0,0};
+        Log.d("PRIORITY", ((Integer)prioCounter[0]).toString());
+        Log.d("PRIORITY", ((Integer)prioCounter[1]).toString());
+        Log.d("PRIORITY", ((Integer)prioCounter[2]).toString());
 
         histogramViewModel.getListOfNamesandPriorities().observe(this, new Observer<List<namePrioPOJO>>() {
             @Override
             public void onChanged(List<namePrioPOJO> namePrioPOJOS) {
                 //will show the count of tasks for each priority
                 for (namePrioPOJO nameprio : namePrioPOJOS){
+
+                    Log.d("PRIORITY",nameprio.Priority);
+                    Log.d("ENUM", ((Integer)PriorityEnum.Urgent.getValue()).toString());
+                    Log.d("ENUM", ((Integer)PriorityEnum.Important.getValue()).toString());
+                    Log.d("ENUM", ((Integer)PriorityEnum.Secondary.getValue()).toString());
                     switch(nameprio.Priority){
                         case "Urgent":
                             prioCounter[PriorityEnum.Urgent.getValue()]++;
+                            break ;
                         case "Important":
                             prioCounter[PriorityEnum.Important.getValue()]++;
+                            break ;
                         case "Secondary":
                             prioCounter[PriorityEnum.Secondary.getValue()]++;
+                            break ;
                     }
+                    Log.d("PRIORITY", ((Integer)prioCounter[0]).toString());
+                    Log.d("PRIORITY", ((Integer)prioCounter[1]).toString());
+                    Log.d("PRIORITY", ((Integer)prioCounter[2]).toString());
                     //creates dataset values for histogram
                     ArrayList<BarEntry> values = new ArrayList<>();
                     values.add(new BarEntry(0,prioCounter[PriorityEnum.Urgent.getValue()]));
