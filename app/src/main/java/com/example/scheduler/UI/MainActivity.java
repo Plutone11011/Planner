@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity{
 
         args.putStringArray(getString(R.string.name_list_dialog), listOfCurrentTasks);
         args.putStringArray(getString(R.string.date_list_dialog),dateOfCurrentTasks);
-        //true if task needs to be deleted, false if it is to be updated, null if it is to be completed
+        //0 is deletion, 1 editing, 2 completed
         args.putInt(getString(R.string.action_dialog),action);
 
         dialogFragment.setArguments(args);

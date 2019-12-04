@@ -111,7 +111,7 @@ public class SelectTaskFragment extends DialogFragment implements TasksRepo.Task
 
                 }
                 else {
-                    //it's false
+                    //it's 1, so editing
                     //intent to task activity
                     selectDateFragmentVM.getTaskWithPrimaryKey(selectDateFragmentVM.getT_date(),selectDateFragmentVM.getT_name(),
                             SelectTaskFragment.this);
