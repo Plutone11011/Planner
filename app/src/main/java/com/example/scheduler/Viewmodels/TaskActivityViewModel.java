@@ -1,6 +1,7 @@
 package com.example.scheduler.Viewmodels;
 
 import android.app.Application;
+import android.app.TaskStackBuilder;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -88,11 +89,12 @@ public class TaskActivityViewModel extends AndroidViewModel {
         tasksRepo.insert(tasksTable);
     }
 
-    public void update(TasksTable tasksTable){
-        tasksRepo.update(tasksTable);
+    public void insert_delete(TasksTable oldtable, TasksTable newtable){
+        tasksRepo.insertdeleteWithTransaction(oldtable, newtable);
     }
 
     public void delete(TasksTable tasksTable){
         tasksRepo.delete(tasksTable);
     }
+
 }

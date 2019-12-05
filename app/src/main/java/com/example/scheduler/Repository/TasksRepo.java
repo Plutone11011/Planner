@@ -54,6 +54,11 @@ public class TasksRepo {
         new DeleteTasksAsyncTask(tasksDAO).execute(tasksTable);
     }
 
+    public void insertdeleteWithTransaction(TasksTable oldtable, TasksTable newtable){
+        TwoTables twoTables = new TwoTables(oldtable,newtable);
+        new InsertDeleteAsyncTask(tasksDAO).execute(twoTables);
+    }
+
     public void deleteTaskWithPrimaryKey(String date, String name){
         new DeleteTaskWithPrimaryKeyAsyncTask(tasksDAO,name,date).execute();
     }
@@ -123,6 +128,31 @@ public class TasksRepo {
         @Override
         protected Void doInBackground(TasksTable... tasksTables) {
             tasksDAO.update(tasksTables[0]);
+            return null;
+        }
+    }
+
+    private static class TwoTables{
+        TasksTable oldtable ;
+        TasksTable newtable ;
+
+        TwoTables(TasksTable oldtable, TasksTable newtable){
+            this.oldtable = oldtable ;
+            this.newtable = newtable ;
+        }
+    }
+
+    private static class InsertDeleteAsyncTask extends AsyncTask<TwoTables, Void, Void>{
+
+        private TasksDAO tasksDAO ;
+
+        private InsertDeleteAsyncTask(TasksDAO tasksDAO){
+            this.tasksDAO = tasksDAO ;
+        }
+
+        @Override
+        protected Void doInBackground(TwoTables... twoTables) {
+            this.tasksDAO.insertdeleteWithTransaction(twoTables[0].oldtable, twoTables[0].newtable);
             return null;
         }
     }

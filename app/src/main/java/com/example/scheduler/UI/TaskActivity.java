@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class TaskActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> adapterPriority  ;
     private ArrayAdapter<String> adapterClass ;
     private SharedPreferences sharedPrefClassOptions, sharedPrefPendingIntentID, sharedPreferencesSettings ;
+    private TasksTable tasksTableToUpdate ;
 
     //auxiliary method to start dialog fragments for date and time
     private void startDialogFragment(TextInputEditText mTextInputEditText, DialogFragment dialogFragment, String tag, String key){
@@ -105,7 +107,7 @@ public class TaskActivity extends AppCompatActivity {
 
         //editor.clear();
 
-        if (sharedPrefClassOptions.getStringSet(getString(R.string.class_task_sharedpref),null) == null){
+            if (sharedPrefClassOptions.getStringSet(getString(R.string.class_task_sharedpref),null) == null){
             //first time, they're being created
 
 
@@ -253,7 +255,7 @@ public class TaskActivity extends AppCompatActivity {
         intent.putExtra("state",taskVM.getState());
         //lets broadcast receiver execute code with application permission
         //even when the app is not active
-
+        Log.d("Alarm",taskVM.getName());
         SharedPreferences.Editor editor = sharedPrefPendingIntentID.edit();
         Set<String> PendingIntentIDs = sharedPrefPendingIntentID.getStringSet(getString(R.string.pending_intent_sharedpref),null);
 
@@ -291,8 +293,6 @@ public class TaskActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_ok) {
             // User ok, save task and return to main activity
-            //Toast.makeText(this,item.getTitle().toString(),Toast.LENGTH_SHORT).show();
-
             //if all 3 of the required fields are filled
             //can set the view model and the db, and return to the main calendar activity
             if(!TextUtils.isEmpty(inputNameText.getText()) && !TextUtils.isEmpty(inputDateText.getText()) && !TextUtils.isEmpty(inputTimeText.getText())){
@@ -304,9 +304,9 @@ public class TaskActivity extends AppCompatActivity {
                 }
                 taskVM.setPriority(spinnerPriority.getSelectedItem().toString());
                 taskVM.setType(spinnerClass.getSelectedItem().toString());
-                TasksTable t = new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
+                TasksTable newTable = new TasksTable(taskVM.getName(),taskVM.getTask_date(),taskVM.getState(),
                         taskVM.getType(), taskVM.getPriority());
-
+                Log.d("TaskCreation",taskVM.getName());
                 switch(taskVM.getPriority()){
                     case "Urgent":
                         if (!sharedPreferencesSettings.getBoolean("notifications",true)){
@@ -333,10 +333,11 @@ public class TaskActivity extends AppCompatActivity {
 
                 //flag to differentiate purpose of intent
                 if (taskVM.getIntentForUpdate()){
-                    taskVM.update(t);
+                    taskVM.insert_delete(tasksTableToUpdate, newTable);
+
                 }
                 else {
-                    taskVM.insert(t);
+                    taskVM.insert(newTable);
                 }
                 taskVM.setIntentForUpdate(false);
                 startActivity(new Intent(TaskActivity.this,MainActivity.class));
@@ -380,6 +381,7 @@ public class TaskActivity extends AppCompatActivity {
             spinnerPriority.setSelection(adapterPriority.getPosition(intent.getCharSequenceExtra("priority")));
             spinnerClass.setSelection(adapterClass.getPosition((String)intent.getCharSequenceExtra("type")));
 
+
             fullDate = intent.getCharSequenceExtra("date").toString();
 
             Pattern pattern = Pattern.compile(" +");//1 or more repetitions of space
@@ -393,6 +395,14 @@ public class TaskActivity extends AppCompatActivity {
             //sets state because it could have been changed by notifications
             //while the default state for creation of a new task is pending
             taskVM.setState(intent.getCharSequenceExtra("state").toString());
+
+            Log.d("UPDATE",inputNameText.getText().toString());
+            Log.d("UPDATE",intent.getCharSequenceExtra("date").toString());
+            Log.d("UPDATE", taskVM.getState());
+            Log.d("UPDATE", spinnerClass.getSelectedItem().toString());
+            Log.d("UPDATE",spinnerPriority.getSelectedItem().toString());
+            tasksTableToUpdate = new TasksTable(inputNameText.getText().toString(), intent.getCharSequenceExtra("date").toString(),
+                    taskVM.getState(), spinnerClass.getSelectedItem().toString(), spinnerPriority.getSelectedItem().toString());
         }
 
 
