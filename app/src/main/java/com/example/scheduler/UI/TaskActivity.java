@@ -282,7 +282,7 @@ public class TaskActivity extends AppCompatActivity {
             pendingIntent = PendingIntent.getBroadcast(TaskActivity.this,currentMax,intent,0);
 
         }
-        Log.d("PENDING",PendingIntentIDs.toString());
+        Log.d("PENDING",pendingIntent.toString());
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
